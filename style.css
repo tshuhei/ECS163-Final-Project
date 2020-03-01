@@ -1,0 +1,72 @@
+body, html {
+    width: 100%;
+    height: 100%;
+}
+
+#curvechart{
+    width: 100%;
+    height: 50%;
+}
+
+#scatterplot{
+    float: left;
+    width: 50%;
+    height: 50%;
+}
+
+#sunburst{
+    float: right;
+    width: 50%;
+    height: 50%;
+}
+
+#histogram{
+    width: 100%;
+    height: 50%;
+}
+
+
+
+.control {
+    position: absolute;
+    width: 140px;
+    background-color: white;
+    border: 1px solid darkgrey;
+    border-radius: 5px;
+    top: 10px;
+    right: 10px;
+    font-size: 12px;
+    padding: 5px;
+}
+
+.control #startTransition {
+    width: 100%;
+}
+
+
+
+
+.list{
+    float: right;
+}
+.container{
+    overflow: auto;
+}
+
+select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+
+.tooltipText {
+    text-anchor: middle;
+    font-size: 11px;
+    fill: white;
+    opacity: 0.9;
+}
+
+.tooltip{
+    pointer-events: none;
+}
