@@ -3,6 +3,7 @@ main.init = function(error, data){
     if(error) throw error;
     // preprocess data so that the type string is converted to number
     main.preprocess(data);
+    main.data = data;
     // initialize each part
     curvechart.init(data);
     scatterplot.init(data);
