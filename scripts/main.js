@@ -1,0 +1,92 @@
+main = {};
+main.init = function(error, data){
+    if(error) throw error;
+    // preprocess data so that the type string is converted to number
+    main.preprocess(data);
+    // initialize each part
+    curvechart.init(data);
+    scatterplot.init(data);
+    sunburst.init(data);
+    histogram.init(data);
+}
+
+
+/**
+ * preprocess csv raw data so that it can be better used later
+ * after being preprocessed, data is an array in which each datum is an object with property:
+ * available: boolean;
+ * region: string;
+ * subregion: string;
+ * country: string;
+ * others: if available is true then others are of type number. Otherwise others are 'NA'.
+ * 
+ * Also, this function will initialize main.START_YAER and main.END_YEAR.
+ */
+main.preprocess = function(data){
+    for(let datum of data){
+        datum.year = Number(datum.year);
+        if(datum.suicide_no === 'NA'){
+            datum.available = false;
+        }
+        else{
+            datum.available = true;
+            // convert other fields to type number, if applicable
+            datum.suicide_no = Number(datum.suicide_no);
+            datum.population = Number(datum.population);
+            datum.GDP_year = Number(datum.GDP_year);
+            datum.GDP_percap = Number(datum.GDP_percap);
+            datum.suicide_ratio = Number(datum.suicide_ratio);
+        }
+    }
+    main.START_YEAR = data[0].year;
+    // find the start year and end year
+    let countrySample = data[0].country;
+    let year;
+    for(let datum of data){
+        if(datum.country !== countrySample){
+            break;
+        }
+        year = datum.year;
+    }
+    main.END_YEAR = year;
+}
+
+/**
+ * get the datum of a specific country in a specific year
+ * 
+ * if the year is not in [main.START_YEAR, main.END_YEAR], null is returned
+ * if the year is in that interval but the datum.available is false, null is returned as well
+ * @param {array} data the data we have
+ * @param {number} country
+ * @param {number} year
+ */
+main.getItem = function(data, country, year){
+    if(year < main.START_YEAR || year > main.END_YEAR){
+        return null;
+    }
+    else{
+        let found = false;
+        let yearNum = this.END_YEAR - this.START_YEAR + 1;
+        let countryNum = data.length/yearNum;
+        let i;
+        for(i = 0; i < countryNum; i++){
+            if(data[i * yearNum].country === country){
+                found = true;
+                break;
+            }
+        }
+
+        if(found === false){
+            return null;
+        }
+        datum = data[i * yearNum + year - this.START_YEAR] 
+        if(datum.available === true){
+            return datum;
+        }
+        else{
+            return null;
+        }
+    }
+}
+
+d3.csv('./data/suicide_new.csv', main.init);
