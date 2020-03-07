@@ -113,6 +113,14 @@ sunburst.init = function(data){
     const g = sunburst.svg.append("g")
           .attr("transform", `translate(${sunburst.svgWidth / 2},${sunburst.svgHeight / 2})`);
 
+    sunburst.svg.append("text")
+                .attr("x",sunburst.svgWidth/2)
+                .attr("y",sunburst.svgHeight)
+                .attr("fill","black")
+                .attr("font-size",15)
+                .attr("text-anchor","middle")
+                .text("Suicide numbers of Regions")
+
     const path = g.append("g")
         .selectAll("path")
         .data(root.descendants().slice(1))
