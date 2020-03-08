@@ -28,7 +28,7 @@ html {
 
 
 
-.control {
+<<<<<<< HEAD .control {
     position: absolute;
     width: 140px;
     background-color: white;
@@ -62,7 +62,7 @@ select {
 }
 
 
-.tooltipText {
+=======>>>>>>>f4a0010683ce9ce60f4c2109b1bc4664023d501e .tooltipText {
     text-anchor: middle;
     font-size: 11px;
     fill: white;
@@ -71,4 +71,16 @@ select {
 
 .tooltip {
     pointer-events: none;
+}
+
+.axisText {
+    text-anchor: middle;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 12px;
+}
+
+#strokeGroup {
+    fill: none;
+    stroke-width: 2.5px;
+    stroke: blueviolet;
 }

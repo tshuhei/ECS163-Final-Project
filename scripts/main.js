@@ -58,7 +58,7 @@ main.preprocess = function(data){
  * if the year is not in [main.START_YEAR, main.END_YEAR], null is returned
  * if the year is in that interval but the datum.available is false, null is returned as well
  * @param {array} data the data we have
- * @param {number} country
+ * @param {string} country
  * @param {number} year
  */
 main.getItem = function(data, country, year){
@@ -66,28 +66,40 @@ main.getItem = function(data, country, year){
         return null;
     }
     else{
-        let found = false;
-        let yearNum = this.END_YEAR - this.START_YEAR + 1;
-        let countryNum = data.length/yearNum;
-        let i;
-        for(i = 0; i < countryNum; i++){
-            if(data[i * yearNum].country === country){
-                found = true;
-                break;
+        for(let datum of data){
+            if(datum.year === year && datum.country === country){
+                if(datum.available){
+                    return datum;
+                }
+                else{
+                    return null;
+                }
             }
         }
-
-        if(found === false){
-            return null;
-        }
-        datum = data[i * yearNum + year - this.START_YEAR] 
-        if(datum.available === true){
-            return datum;
-        }
-        else{
-            return null;
-        }
     }
+    // else{
+    //     let found = false;
+    //     let yearNum = this.END_YEAR - this.START_YEAR + 1;
+    //     let countryNum = data.length/yearNum;
+    //     let i;
+    //     for(i = 0; i < countryNum; i++){
+    //         if(data[i * yearNum].country === country){
+    //             found = true;
+    //             break;
+    //         }
+    //     }
+
+    //     if(found === false){
+    //         return null;
+    //     }
+    //     datum = data[i * yearNum + year - this.START_YEAR] 
+    //     if(datum.available === true){
+    //         return datum;
+    //     }
+    //     else{
+    //         return null;
+    //     }
+    // }
 }
 
 d3.csv('./data/suicide_new.csv', main.init);
