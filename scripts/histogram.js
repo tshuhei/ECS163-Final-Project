@@ -138,7 +138,10 @@ histogram.createCharts = function() {
     })
 };
 
-
+/*
+ *	Update all charts with new data.
+ * 	histogram..currentData should be updated before calling this function.
+ */
 histogram.updateCharts = function() {
     var n = this.columns.length;
     var count = 0;
