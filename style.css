@@ -1,26 +1,27 @@
-body, html {
+body,
+html {
     width: 100%;
     height: 100%;
 }
 
-#curvechart{
+#curvechart {
     width: 100%;
     height: 50%;
 }
 
-#scatterplot{
+#scatterplot {
     float: left;
     width: 50%;
     height: 50%;
 }
 
-#sunburst{
+#sunburst {
     float: right;
     width: 50%;
     height: 50%;
 }
 
-#histogram{
+#histogram {
     width: 100%;
     height: 50%;
 }
@@ -46,10 +47,11 @@ body, html {
 
 
 
-.list{
+.list {
     float: right;
 }
-.container{
+
+.container {
     overflow: auto;
 }
 
@@ -67,6 +69,6 @@ select {
     opacity: 0.9;
 }
 
-.tooltip{
+.tooltip {
     pointer-events: none;
 }
