@@ -194,11 +194,3 @@ histogram.updateCharts = function() {
         count++;
     })
 }
-
-histogram.test = function(yr) {
-    this.currentYear = yr;
-    this.currentData = this.originalData.filter((d) => {
-        return (d.available && d.year === this.currentYear);
-    });
-    this.updateChart();
-}
