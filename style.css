@@ -8,6 +8,7 @@ body, html {
     height: 50%;
 }
 
+
 #scatterplot{
     float: left;
     width: 50%;
@@ -27,39 +28,6 @@ body, html {
 
 
 
-.control {
-    position: absolute;
-    width: 140px;
-    background-color: white;
-    border: 1px solid darkgrey;
-    border-radius: 5px;
-    top: 10px;
-    right: 10px;
-    font-size: 12px;
-    padding: 5px;
-}
-
-.control #startTransition {
-    width: 100%;
-}
-
-
-
-
-.list{
-    float: right;
-}
-.container{
-    overflow: auto;
-}
-
-select {
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-}
-
-
 .tooltipText {
     text-anchor: middle;
     font-size: 11px;
@@ -69,4 +37,16 @@ select {
 
 .tooltip{
     pointer-events: none;
+}
+
+.axisText{
+    text-anchor: middle;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 12px;
+}
+
+#strokeGroup{
+    fill: none;
+    stroke-width: 2.5px;
+    stroke: blueviolet;
 }
