@@ -20,7 +20,7 @@ histogram.histo = d3.histogram();
  * @param {array} data the data loaded from csv file
  * ! don't change data in any way, because it would be be passed to other charts as well.
  */
-histogram.init = function(data) {
+histogram.init = function() {
 
     this.originalData = data;
     this.currentData = this.originalData.filter((d) => {
@@ -142,7 +142,8 @@ histogram.createCharts = function() {
  *	Update all charts with new data.
  * 	histogram..currentData should be updated before calling this function.
  */
-histogram.updateCharts = function() {
+
+histogram.update = function(duration) {
     var n = this.columns.length;
     var count = 0;
     // Create each rect for histogram

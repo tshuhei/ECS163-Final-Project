@@ -54,7 +54,7 @@ sunburst.color = d3.scaleOrdinal(d3.schemeCategory10);
  * @param {array} data the data loaded from csv file
  * ! don't change data in any way, because it would be be passed to other charts as well.
  */
-sunburst.init = function(data){
+sunburst.init = function(){
     //console.log("sunburst data",data);
     //console.log("sunburst start year",sunburst.START_YEAR);
     data = data.filter(function(datum){
@@ -188,6 +188,15 @@ sunburst.init = function(data){
               }).transition(t)
                 .attr("fill-opacity", d => +labelVisible(d.target))
                 .attrTween("transform", d => () => labelTransform(d.current));
+
+            /*
+              * 1. filter the wholeYearData based on the Region/Subregion
+              * 2. get the year data from a specific data
+              * 3. filter the singleYearData base on the Region/Subregion
+              * 4. scatterplot.update(duration)
+              * 5. histogram.update(duration)
+              * 6. curvechart.update(duration)
+            */
         }
 
         function arcVisible(d) {
@@ -209,9 +218,17 @@ sunburst.init = function(data){
 
 /**
  * update the data using a transition
- * @param {number} year the new year in which data need to be displayed
- * @param {number} duration the duration of the transition
+ * fetch the global snigleYearData
+ * and plot the data
  */
-sunburst.updateYear = function(year, duration){
+sunburst.update = function(duration){
 
 }
+
+/*
+* make a color Map for each country base on Region
+* {
+    "Japan": color(1);
+    "China": 
+*}
+*/

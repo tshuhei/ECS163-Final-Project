@@ -20,7 +20,7 @@ curvechart.normalize = function(name){
 /**
  * 
  */
-curvechart.setLocalData = function(data){
+curvechart.setLocalData = function(){
     this.localData = {};
     // this.data is an object indexed by year
     // each value is also an object indexed by country
@@ -436,4 +436,13 @@ curvechart.update = function(duration, crtyear = curvechart.now){
 curvechart.existQuery = function(year, country){
     year = year.toString();
     return curvechart.localData.hasOwnProperty(year) && curvechart.localData[year].hasOwnProperty(country);
+}
+
+/**
+ * update the data using a transition
+ * fetch the global wholeYearData
+ * and plot the data
+ */
+curvechart.update = function(duration){
+
 }
