@@ -54,7 +54,7 @@ sunburst.color = d3.scaleOrdinal(d3.schemeCategory10);
  * @param {array} data the data loaded from csv file
  * ! don't change data in any way, because it would be be passed to other charts as well.
  */
-sunburst.init = function(){}
+sunburst.init = function(){
     sunburst.update(0);
 }
 
@@ -69,7 +69,7 @@ sunburst.update = function(duration){
         /*data = data.filter(function(datum){
             return datum.year === sunburst.START_YEAR && datum.available === true;
         });*/
-        
+
         data = main.singleYearData;
 
         sunburst.svg.select("g").remove();
@@ -125,6 +125,19 @@ sunburst.update = function(duration){
     
         const g = sunburst.svg.append("g")
               .attr("transform", `translate(${sunburst.svgWidth / 2},${sunburst.svgHeight / 2})`);
+
+        g.append("circle")
+            .attr("cx",0)
+            .attr("cy",0)
+            .attr("r",sunburst.radius/1.1)
+            .attr("fill","gray");
+
+        g.append("text")
+            .attr("x",0)
+            .attr("y",0)
+            .attr("text-anchor","middle")
+            .attr("fill","white")
+            .text("BACK")
     
         sunburst.svg.append("text")
                     .attr("x",sunburst.svgWidth/2)

@@ -444,5 +444,5 @@ curvechart.existQuery = function(year, country){
  * and plot the data
  */
 curvechart.update = function(duration){
-
+    console.log("curvechart.update called");
 }

@@ -16,9 +16,7 @@ scatterplot.init = function(){
  * and plot the data
  */
 scatterplot.update = function(duration){
-
- 
-
+    console.log("scatterplot.update called");
 };
 
 /**

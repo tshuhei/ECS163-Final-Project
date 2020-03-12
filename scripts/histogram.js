@@ -144,6 +144,7 @@ histogram.createCharts = function() {
  */
 
 histogram.update = function(duration) {
+    console.log("histogram.update called");
     var n = this.columns.length;
     var count = 0;
     // Create each rect for histogram
