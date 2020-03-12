@@ -1,5 +1,4 @@
 reset={};
-console.log("reset dayo");
 
 reset.svg = d3.select("#reset");
 reset.data = null;

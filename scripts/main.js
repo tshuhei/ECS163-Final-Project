@@ -21,7 +21,7 @@ main.init = function(error, data){
     // initialize each part
     curvechart.init(data);//init();
     scatterplot.init(data);//init();
-    sunburst.init(data);//init();
+    sunburst.init();//init();
     histogram.init(data);//init();
     reset.init(data);//init();
 }
