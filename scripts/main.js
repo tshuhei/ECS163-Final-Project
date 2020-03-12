@@ -19,10 +19,11 @@ main.init = function(error, data){
     });
 
     // initialize each part
-    //init(data) should be init() in the final version
-    curvechart.init(data);//init();
-    scatterplot.init(data);//init();
+    //TODO: init(data) should be init() in the final version
+    // first initialize sunburst, so that other charts can use color map defined in sunburst to color their curves/points
     sunburst.init();//init();
+    curvechart.init();//init();
+    scatterplot.init(data);//init();
     histogram.init(data);//init();
     reset.init(data);//init();
 }

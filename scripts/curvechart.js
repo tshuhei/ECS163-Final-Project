@@ -18,9 +18,10 @@ curvechart.normalize = function(name){
 };
 
 /**
- * 
+ * change the format of main.wholeYearData to an object so that it could be used more conveniently later
  */
-curvechart.setLocalData = function(data){
+curvechart.setLocalData = function(){
+    let data = main.wholeYearData;
     this.localData = {};
     // this.data is an object indexed by year
     // each value is also an object indexed by country
@@ -44,19 +45,13 @@ curvechart.setLocalData = function(data){
 
 
 /**
- * initialize the chart
- * @param {array} data the data loaded from csv file
- * ! don't change data in any way, because it would be passed to other charts as well.
+ * initialize the chart using main.wholeYearData
  */
-curvechart.init = function(data){
-    // this.currentStart = main.START_YEAR;
-    // this.currentEnd = main.END_YEAR;
-    // this.now = this.currentStart;
+curvechart.init = function(){
     this.EPSILON = 1e-8;
     this.IN_DURATION = 990;
     this.EX_DURATION = 1000;
     this.type = 'suicide_ratio';
-    this.originalData = data;
     this.parseTime = d3.timeParse('%Y');
     this.animating = false;
     this.currentStart = main.START_YEAR;
@@ -68,7 +63,7 @@ curvechart.init = function(data){
     wholeChart.append('g')
         .attr('id', 'control');
     this.setControlAxis();
-    this.setLocalData(data);
+    this.setLocalData();
     this.draw();    
 }
 
@@ -155,12 +150,20 @@ curvechart.setControlAxis = function(){
                     }
                     else if(id === 'now'){
                         curvechart.now = year;
+                        // change main.singleYearData
+                        main.singleYearData = main.wholeYearData.filter(function(datum){
+                            return datum.year === curvechart.now;
+                        });
+
+                        sunburst.update(0);
+                        scatterplot.update(0);
+                        histogram.update(0);
                     }
                     else if(id === 'end'){
                         curvechart.currentEnd = year;
                     }
                     curvechart.draw();
-                })
+                });
         });
     dragHandler(startTick);
     dragHandler(endTick);
@@ -250,7 +253,15 @@ curvechart.setControlAxis = function(){
 curvechart.animate = function(){
     if(this.now < this.currentEnd){
         this.now++;
-        this.update(this.IN_DURATION);
+        // change main.singleYearData
+        main.singleYearData = main.wholeYearData.filter(function(datum){
+            return datum.year === curvechart.now;
+        });
+        sunburst.update(this.IN_DURATION);
+        this.__update__(this.IN_DURATION);
+        scatterplot.update(this.IN_DURATION);
+        histogram.update(this.IN_DURATION);
+
         // move nowTick
         d3.select('use')
             .transition()
@@ -332,6 +343,7 @@ curvechart.setStrokeGroup = function(){
 }
 /**
  * draw the chart based on this.localData
+ * // @param {boolean} updateOthers whether to call the update functions in other charts. Default to false
  */
 curvechart.draw = function(){
     d3.select('#curvechart')
@@ -341,7 +353,7 @@ curvechart.draw = function(){
     this.setScale();
     this.setStrokeGroup();
     for(let year = this.currentStart + 1; year <= this.now; year++){
-        this.update(0, year);
+        this.__update__(0, year);
     }
 }
 
@@ -370,21 +382,14 @@ curvechart.getRange = function(){
 }
 
 
-/**
- * update the data using a transition
- * @param {number} year the new year in which data need to be displayed
- * @param {number} duration the duration of the transition
- */
-curvechart.updateYear = function(year, duration){
-
-}
 
 /**
  * extent each curve to crtyear
+ * it is used internally
  * @param {float} duration how long the transition will be
  * @param {number} crtyear draw the period between [crtyear-1, crtyear]
  */
-curvechart.update = function(duration, crtyear = curvechart.now){
+curvechart.__update__ = function(duration, crtyear = curvechart.now){
     let lineGen = d3.line()
         .curve(d3.curveCatmullRomOpen);
     
@@ -443,6 +448,8 @@ curvechart.existQuery = function(year, country){
  * fetch the global wholeYearData
  * and plot the data
  */
-curvechart.update2 = function(duration){// This is name conflict
-    console.log("curvechart.update called");
+curvechart.update = function(duration){
+    // reset local data
+    this.setLocalData();
+    this.draw();
 }

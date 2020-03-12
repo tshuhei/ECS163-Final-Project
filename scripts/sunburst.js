@@ -69,9 +69,8 @@ sunburst.update = function(duration){
         /*data = data.filter(function(datum){
             return datum.year === sunburst.START_YEAR && datum.available === true;
         });*/
-
-        data = main.singleYearData;
-        wholeData = main.wholeYearData;
+        let data = main.singleYearData;// "let" makes data local to sunburst.update
+        let wholeData = main.wholeYearData;
 
         sunburst.svg.select("g").remove();
         
@@ -240,6 +239,7 @@ sunburst.update = function(duration){
                             return datum.subregion === p.data.name;
                         }
                     });
+
                     main.singleYearData = data.filter(function(datum){
                         if("children" in p.data.children[0]){
                             return datum.region === p.data.name;
@@ -254,7 +254,7 @@ sunburst.update = function(duration){
 
                 scatterplot.update(duration);
                 histogram.update(duration);
-                curvechart.update2(duration);
+                curvechart.update(duration); // name conflict resolved
 
             }
     
