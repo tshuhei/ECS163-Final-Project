@@ -443,6 +443,6 @@ curvechart.existQuery = function(year, country){
  * fetch the global wholeYearData
  * and plot the data
  */
-curvechart.update = function(duration){
+curvechart.update2 = function(duration){// This is name conflict
     console.log("curvechart.update called");
 }

@@ -71,6 +71,7 @@ sunburst.update = function(duration){
         });*/
 
         data = main.singleYearData;
+        wholeData = main.wholeYearData;
 
         sunburst.svg.select("g").remove();
         
@@ -223,6 +224,38 @@ sunburst.update = function(duration){
                   * 5. histogram.update(duration)
                   * 6. curvechart.update(duration)
                 */
+               //console.log("wholeYearData",main.wholeYearData);
+                //1. filter the wholeYearData based on the Region/Subregion
+                //2. get the year data from a specific data
+                // I don't think this is necessary
+                //3. filter the singleYearData based on the Region/Subregion
+               if(p.data.name === "countries"){
+                   main.wholeYearData = wholeData;
+                   main.singleYearData = data;
+               }else{
+                    main.wholeYearData = wholeData.filter(function(datum){
+                        if("children" in p.data.children[0]){
+                            return datum.region === p.data.name;
+                        }else{
+                            return datum.subregion === p.data.name;
+                        }
+                    });
+                    main.singleYearData = data.filter(function(datum){
+                        if("children" in p.data.children[0]){
+                            return datum.region === p.data.name;
+                        }else{
+                            return datum.subregion === p.data.name;
+                        }
+                    })
+                }
+
+                console.log("wholeYearData",main.wholeYearData);
+                console.log("singleYearData",main.singleYearData);
+
+                scatterplot.update(duration);
+                histogram.update(duration);
+                curvechart.update2(duration);
+
             }
     
             function arcVisible(d) {

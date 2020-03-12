@@ -14,6 +14,13 @@ reset.button = reset.svg.append("rect")
                         .attr("height",50)
                         .style("fill","gray")
                         .on("click",function(){
+                            //reset the wholeYearData
+                            main.wholeYearData = main.originalData;
+                            //reset the singleYearData
+                            main.singleYearData = main.originalData.filter(function(datum){
+                                return datum.year === main.START_YEAR;
+                            });
+                            //reset all charts
                             curvechart.init(reset.data);//init();
                             scatterplot.init(reset.data);//init();
                             sunburst.init(reset.data);//init();
