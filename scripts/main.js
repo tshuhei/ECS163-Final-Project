@@ -8,11 +8,22 @@ main.init = function(error, data){
     // preprocess data so that the type string is converted to number
     main.preprocess(data);
     main.data = data;
+    
+    //initialize originalData. NEVER CHANGE!
+    main.originalData = data;
+    //initialize wholeYearData
+    main.wholeYearData = data;
+    //initialize singleYearData. Data only in 1985
+    main.singleYearData = data.filter(function(datum){
+        return datum.year === main.START_YEAR;
+    });
+
     // initialize each part
-    curvechart.init();
-    scatterplot.init();
-    sunburst.init();
-    histogram.init();
+    curvechart.init(data);//init();
+    scatterplot.init(data);//init();
+    sunburst.init(data);//init();
+    histogram.init(data);//init();
+    reset.init(data);//init();
 }
 
 

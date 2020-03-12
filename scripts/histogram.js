@@ -20,7 +20,7 @@ histogram.histo = d3.histogram();
  * @param {array} data the data loaded from csv file
  * ! don't change data in any way, because it would be be passed to other charts as well.
  */
-histogram.init = function() {
+histogram.init = function(data) {
 
     this.originalData = data;
     this.currentData = this.originalData.filter((d) => {

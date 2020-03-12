@@ -20,7 +20,7 @@ curvechart.normalize = function(name){
 /**
  * 
  */
-curvechart.setLocalData = function(){
+curvechart.setLocalData = function(data){
     this.localData = {};
     // this.data is an object indexed by year
     // each value is also an object indexed by country

@@ -26,9 +26,14 @@ html {
     height: 50%;
 }
 
+#reset{
+    width:100%;
+    height:100px;
+}
 
 
-<<<<<<< HEAD .control {
+
+.control {
     position: absolute;
     width: 140px;
     background-color: white;
@@ -62,7 +67,7 @@ select {
 }
 
 
-=======>>>>>>>f4a0010683ce9ce60f4c2109b1bc4664023d501e .tooltipText {
+.tooltipText {
     text-anchor: middle;
     font-size: 11px;
     fill: white;
