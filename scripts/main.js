@@ -19,6 +19,7 @@ main.init = function(error, data){
     });
 
     // initialize each part
+    //init(data) should be init() in the final version
     curvechart.init(data);//init();
     scatterplot.init(data);//init();
     sunburst.init();//init();

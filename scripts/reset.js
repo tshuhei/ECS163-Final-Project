@@ -21,6 +21,7 @@ reset.button = reset.svg.append("rect")
                                 return datum.year === main.START_YEAR;
                             });
                             //reset all charts
+                            //init(reset.data) should be init() in the final version.
                             curvechart.init(reset.data);//init();
                             scatterplot.init(reset.data);//init();
                             sunburst.init(reset.data);//init();
