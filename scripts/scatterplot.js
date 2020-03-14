@@ -21,54 +21,22 @@ scatterplot.width = scatterplot.svgWidth - scatterplot.margins.left - scatterplo
 scatterplot.x = d3.scaleLinear().range([scatterplot.margins.left,scatterplot.width]);
 scatterplot.y = d3.scaleLinear().range([scatterplot.height,20]);
 
-scatterplot.xAxis = d3.axisBottom(scatterplot.x);
+scatterplot.xAxis = scatterplot.svg.append("g")
+    .call(d3.axisBottom(scatterplot.x))
+    .attr("transform", "translate(0," + (scatterplot.height) + ")");
 
-/**
- * initialize the chart
- * @param {array} data the data loaded from csv file
- * ! don't change data in any way, because it would be be passed to other charts as well.
- */
-scatterplot.init = function(){
-    let data = main.singleYearData;
-    let wholeData = main.wholeYearData;
+scatterplot.yAxis = scatterplot.svg.append("g")
+    .call(d3.axisLeft(scatterplot.y))
+    .attr("transform", "translate(" + (scatterplot.margins.left ) + ")");
 
-    data = data.filter(function(datum){
-        return datum.year === scatterplot.START_YEAR && datum.available === true;
-    });
-
-    scatterplot.x.domain(d3.extent(data,function(d) {return d.GDP_percap}))
-    scatterplot.y.domain(d3.extent(data,function(d) {return d.population}))
-
-   var circles = scatterplot.svg.selectAll("circle")
-        .data(data)
-        .enter().append("circle")
-        .style("fill","black")
-        .style("opacity", "0.8")
-        .attr("r", "4")
-        .attr("class", "non_brushed")
-        .attr("cx", function(d) {return scatterplot.x(d.GDP_percap );})
-        .attr("cy", function(d) {return scatterplot.y(d.population);});
-
-
-// append x axis
-    scatterplot.svg.append("g")
-        .attr("transform", "translate(0," + (scatterplot.height) + ")")
-        .call(scatterplot.xAxis);
-
-// append y axis
-    scatterplot.svg.append("g")
-        .attr("transform", "translate(" + (scatterplot.margins.left ) + ")")
-        .call(d3.axisLeft(scatterplot.y));
-
-
-    scatterplot.svg.append("text")
+var xAxisTitle = scatterplot.svg.append("text")
         .attr("x", 400)
         .attr("y", 465)
         .attr("font-weight", "bold")
         .attr("font-size", "15 px")
         .text("GDP Percap");
 
-    scatterplot.svg.append("text")
+var yAxisTitle = scatterplot.svg.append("text")
         .attr("x", -180)
         .attr("y", -5)
         .attr("dy", "1em")
@@ -78,12 +46,77 @@ scatterplot.init = function(){
         .attr("font-size", "15 px")
         .text("Population");
 
-    scatterplot.svg.append("text")
+var scatterTitle = scatterplot.svg.append("text")
         .attr("x", 250)
         .attr("y", 20)
         .attr("font-weight", "bold")
         .attr("font-size", "15 px")
-        .text("GDP Percap vs Population");
+        .text("GDP Percap vs Population");            
+
+
+
+/**
+ * initialize the chart
+ * @param {array} data the data loaded from csv file
+ * ! don't change data in any way, because it would be be passed to other charts as well.
+ */
+
+ 
+scatterplot.init = function(){
+    scatterplot.update(0)
+    
+} 
+
+/**
+ * update the data using a transition
+ * fetch the global snigleYearData
+ * and plot the data
+ */
+scatterplot.update = function(duration){
+    console.log("scatterplot.update called");
+
+    let data = main.singleYearData;
+    let wholeData = main.wholeYearData;
+
+    // filter singleYearData by the available data
+    data = data.filter((d) => { return d.available; })
+
+   var circles = scatterplot.svg
+        .selectAll("circle")
+        .data(data)
+
+    var entering = circles
+        .enter().append("circle")
+        .attr("class", "non_brushed")
+        .classed("circle",true);
+
+// update the circles depending on the available data
+function updateCircle(updateSelection,color){
+    updateSelection
+        .style("fill",color)
+        .attr("class", "non_brushed")
+        .style("opacity", 0.8)
+        .attr("r", 5)
+        .attr("cx", function(d) {return scatterplot.x(d.GDP_percap);})
+        .attr("cy", function(d) {return scatterplot.y(d.population);})
+        
+    }
+
+    // update the x axis
+    scatterplot.x.domain(d3.extent(data,function(d) {return d.GDP_percap}))
+    scatterplot.xAxis.transition().call(d3.axisBottom(scatterplot.x))
+
+    // update the y axis
+    scatterplot.y.domain(d3.extent(data,function(d) {return d.population}))
+    scatterplot.yAxis.transition().call(d3.axisLeft(scatterplot.y))
+
+    // update the new data
+    updateCircle(entering.transition().duration(duration));
+    updateCircle(circles.transition().duration(duration));
+
+    // remove the out of scope circles
+    circles.exit()
+    .remove();
 
     var brush = d3.brush()
         .on("brush", highlightBrushed)
@@ -92,14 +125,24 @@ scatterplot.init = function(){
     scatterplot.svg.append("g")
         .call(brush);
 
+
 // gets all the circles within the brushed selection 
 
 // HELP ME HERE :) 
 function highlightBrushed(){
     if (d3.event.selection != null){
-        circles.attr("class", "non_brushed");
+        entering.attr("class", "non_brushed");
 
         var brush_cords = d3.brushSelection(this);
+
+        entering.filter(function(){
+            var cx = d3.select(this).attr("cx"),
+                cy = d3.select(this).attr("cy");
+                
+            return isBrushed(brush_cords, cx, cy);
+        })
+        .attr("class", "brushed")  // assigned the brushed class to all the circles that have been selected
+        .style("fill", "orange");
 
         circles.filter(function(){
             var cx = d3.select(this).attr("cx"),
@@ -154,20 +197,9 @@ function isBrushed(brush_cords, cx,cy){
             .duration(150)
             .ease(d3.easeLinear)
             .attr("class", "non_brushed")
-            .style("fill", "black")
             return
         }
-    }        
-} 
-
-/**
- * update the data using a transition
- * fetch the global snigleYearData
- * and plot the data
- */
-scatterplot.update = function(duration){
-    console.log("scatterplot.update called");
-      
+    }          
   
 
 
@@ -257,4 +289,7 @@ scatterplot.updateAxis = function(xAxis, yAxis){
        // console.log("singleYearData",main.singleYearData);
 
     }
+
+
+    
 */
