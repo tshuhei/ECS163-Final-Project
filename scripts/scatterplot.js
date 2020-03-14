@@ -13,13 +13,15 @@ scatterplot.margins = {
 scatterplot.svg = d3.select("#scatterplot");
 scatterplot.boundingbox = scatterplot.svg.node().getBoundingClientRect();
 
+var brush = d3.brush();
+
 scatterplot.svgWidth = scatterplot.boundingbox.width;
 scatterplot.svgHeight = scatterplot.boundingbox.height;
 scatterplot.height = scatterplot.svgHeight - scatterplot.margins.top - scatterplot.margins.bottom;
 scatterplot.width = scatterplot.svgWidth - scatterplot.margins.left - scatterplot.margins.right;
 
 scatterplot.x = d3.scaleLinear().range([scatterplot.margins.left,scatterplot.width]);
-scatterplot.y = d3.scaleLinear().range([scatterplot.height,20]);
+scatterplot.y = d3.scaleLinear().range([scatterplot.height,scatterplot.margins.right]);
 
 scatterplot.xAxis = scatterplot.svg.append("g")
     .call(d3.axisBottom(scatterplot.x))
@@ -34,7 +36,7 @@ var xAxisTitle = scatterplot.svg.append("text")
         .attr("y", 465)
         .attr("font-weight", "bold")
         .attr("font-size", "15 px")
-        .text("GDP Percap");
+        
 
 var yAxisTitle = scatterplot.svg.append("text")
         .attr("x", -180)
@@ -63,7 +65,7 @@ var scatterTitle = scatterplot.svg.append("text")
 
  
 scatterplot.init = function(){
-    scatterplot.update(0)
+    scatterplot.update(0,"GDP_percap","population")
     
 } 
 
@@ -72,16 +74,18 @@ scatterplot.init = function(){
  * fetch the global snigleYearData
  * and plot the data
  */
-scatterplot.update = function(duration){
-    console.log("scatterplot.update called");
+scatterplot.update = function(duration,updatedxAxis,updatedyAxis){
+    console.log("x axis:", updatedxAxis)
+    console.log("y axis:", updatedyAxis);
 
     let data = main.singleYearData;
     let wholeData = main.wholeYearData;
 
+ 
     // filter singleYearData by the available data
     data = data.filter((d) => { return d.available; })
 
-   var circles = scatterplot.svg
+    var circles = scatterplot.svg
         .selectAll("circle")
         .data(data)
 
@@ -97,18 +101,69 @@ function updateCircle(updateSelection,color){
         .attr("class", "non_brushed")
         .style("opacity", 0.8)
         .attr("r", 5)
-        .attr("cx", function(d) {return scatterplot.x(d.GDP_percap);})
-        .attr("cy", function(d) {return scatterplot.y(d.population);})
+
+/*  updates both x and y axis based on the selection of the histogram
+    the default data that is loaded in is the GDP_percap vs Population
+*/
+    if(updatedxAxis === "GDP_percap"){
+        
+        //update x axis
+        scatterplot.x.domain(d3.extent(data,function(d) {return d.GDP_percap}))
+        scatterplot.xAxis.transition().call(d3.axisBottom(scatterplot.x))
+        xAxisTitle.text("GDP Percap").transition().duration(duration);
+       
+        // update the data to the selected data
+        updateSelection
+            .attr("cx", function(d) {return scatterplot.x(d.GDP_percap);})
+           }
+       
+        
+    else if(updatedxAxis === "population"){
+        
+        scatterplot.x.domain(d3.extent(data,function(d) {return d.population}))
+        scatterplot.xAxis.transition().call(d3.axisBottom(scatterplot.x))
+        xAxisTitle.text("Population").transition().duration(duration);
+
+        updateSelection
+            .attr("cx", function(d) {return scatterplot.x(d.population);})}
+
+    else if (updatedxAxis === "suicide_ratio"){
+
+        scatterplot.x.domain(d3.extent(data,function(d) {return d.suicide_ratio}))
+        scatterplot.xAxis.transition().call(d3.axisBottom(scatterplot.x))
+        xAxisTitle.text("Suicide Ratio").transition().duration(duration);
+
+        updateSelection
+            .attr("cx", function(d) {return scatterplot.x(d.suicide_ratio);})}
+        
+
+    if(updatedyAxis === "population"){
+
+        scatterplot.y.domain(d3.extent(data,function(d) {return d.population}))
+        scatterplot.yAxis.transition().call(d3.axisLeft(scatterplot.y))
+        yAxisTitle.text("Population").transition().duration(duration);
+        updateSelection
+            .attr("cy", function(d) {return scatterplot.y(d.population);})}
+            
+    else if(updatedyAxis === "GDP_percap"){
+
+        scatterplot.y.domain(d3.extent(data,function(d) {return d.GDP_percap}))
+        scatterplot.yAxis.transition().call(d3.axisLeft(scatterplot.y))
+        yAxisTitle.text("GDP Percap").transition().duration(duration);
+
+        updateSelection
+            .attr("cy", function(d) {return scatterplot.y(d.GDP_percap);})}
+    
+    else if(updatedyAxis === "suicide_ratio"){
+
+        scatterplot.y.domain(d3.extent(data,function(d) {return d.suicide_ratio}))
+        scatterplot.yAxis.transition().call(d3.axisLeft(scatterplot.y))
+        yAxisTitle.text("Suicide Ratio").transition().duration(duration);
+        updateSelection
+            .attr("cy", function(d) {return scatterplot.y(d.suicide_ratio);})
+    }
         
     }
-
-    // update the x axis
-    scatterplot.x.domain(d3.extent(data,function(d) {return d.GDP_percap}))
-    scatterplot.xAxis.transition().call(d3.axisBottom(scatterplot.x))
-
-    // update the y axis
-    scatterplot.y.domain(d3.extent(data,function(d) {return d.population}))
-    scatterplot.yAxis.transition().call(d3.axisLeft(scatterplot.y))
 
     // update the new data
     updateCircle(entering.transition().duration(duration));
@@ -118,12 +173,16 @@ function updateCircle(updateSelection,color){
     circles.exit()
     .remove();
 
-    var brush = d3.brush()
+    if(curvechart.animating){
+        
+    }
+    else{brush
         .on("brush", highlightBrushed)
         .on("end", brushended);
 
     scatterplot.svg.append("g")
         .call(brush);
+    }
 
 
 // gets all the circles within the brushed selection 
@@ -203,7 +262,8 @@ function isBrushed(brush_cords, cx,cy){
   
 
 
-
+console.log("newx",updatedxAxis);
+console.log("newy",updatedyAxis);
 
 };
 
@@ -213,83 +273,9 @@ function isBrushed(brush_cords, cx,cy){
 * and re plot the data
 * create new axis object, and assign them
 */
-scatterplot.updateAxis = function(xAxis, yAxis){
+scatterplot.updateAxis = function(duration,xAxis, yAxis){
+   
+    scatterplot.update(duration,xAxis,yAxis);
 
 
 };
-
-
-
-
-
-
-/** save for later just in case something doesn't work :) */
-
-//brushing events
- /*   scatterplot.svg.append("g")
-        .call(d3.brush()
-        .on("brush", brushed)
-        .on("end",brushended));
-*/
-
-// called when user makes a selection on the scatterplot
- /*  function brushed(){
-        var s = d3.event.selection,
-        x0 = s[0][0],
-        y0 = s[0][1],
-        dx = s[1][0] - x0,
-        dy = s[1][1] - y0;
-    
-    scatterplot.svg.selectAll('circle')
-        .transition()
-        .duration(100)
-        .style("fill",function (d) { 
-            if (scatterplot.x(d.GDP_percap) >= x0 && scatterplot.x(d.GDP_percap) <= x0 + dx
-             && scatterplot.y(d.population) >= y0 && scatterplot.y(d.population) <= y0 + dy){
-
-                var brush_cords = d3.brushSelection(this);
-
-                circles.filter(function(){
-                    var cx = d3.select(this).attr("cx"),
-                        cy = d3.select(this).attr("cy");
-                
-                })
-                .attr("class","brushed");
-             
-                if (data.name === "countries"){
-                    main.wholeYearData = wholeData;
-                    main.singleYearData = data;
-             }else{
-                
-                main.singleYearData = data.filter(function(datum){
-                    if(datum.country === "Austria"){
-                        return datum;
-                    }
-
-                    main.wholeYearData = wholeData.filter(function(datum){
-                        if(datum.country === "Albania"){
-                        return datum;
-                    }
-                   
-                    })
-                            
-                    })
-            };
-
-                return "orange";}
-            else {return "black";}
-        })
-      
-    
-      
-
-        var d_brushed = d3.selectAll(".brushed").data();
-        console.log("brushed",d_brushed);
-       // console.log("wholeYearData",main.wholeYearData);
-       // console.log("singleYearData",main.singleYearData);
-
-    }
-
-
-    
-*/
