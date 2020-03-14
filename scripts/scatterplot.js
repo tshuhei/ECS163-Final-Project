@@ -92,7 +92,9 @@ scatterplot.init = function(){
     scatterplot.svg.append("g")
         .call(brush);
 
-// gets all the circles within the brushed selection
+// gets all the circles within the brushed selection 
+
+// HELP ME HERE :) 
 function highlightBrushed(){
     if (d3.event.selection != null){
         circles.attr("class", "non_brushed");
@@ -109,10 +111,17 @@ function highlightBrushed(){
         .style("fill", "orange");
 
         // save the selected brushed element's countries into a variable
+
+        /* I didn't know how else to access the country data from the selected brushed items so I put .map(function...) 
+        from what I saw from Stackoverflow. There could be a problem that, i'm not sure. In the console looks like d_brushed items are stored in a array */
+
         var d_brushed = d3.selectAll(".brushed").data().map(function(d) {return d.country});
         console.log("brushed elements", d_brushed);
         
-        // filter the single and whole year data by countries
+        // filter the single and whole year data by countries 
+
+        /* IDK there might be a problem b/c d_brushed is being stored in an array? */
+
         main.singleYearData = data.filter(function(datum){
             if(datum.country === d_brushed){
                 return datum;}
