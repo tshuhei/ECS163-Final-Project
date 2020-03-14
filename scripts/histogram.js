@@ -179,7 +179,7 @@ histogram.createCharts = function() {
 
                     if (this.selectedChart1 !== null && this.selectedChart2 !==
                         null) {
-                        scatterplot.updateAxis(this.selectedChart1,
+                        scatterplot.updateAxis(0, this.selectedChart1,
                             this.selectedChart2);
                     } else {
 
@@ -305,8 +305,9 @@ histogram.update = function(duration) {
 
                     if (this.selectedChart1 !== null && this.selectedChart2 !==
                         null) {
-                        scatterplot.updateAxis(this.selectedChart1,
-                            this.selectedChart2);
+                        scatterplot.updateAxis(duration,
+                            this.selectedChart1, this.selectedChart2
+                        );
                     };
                 }
 
