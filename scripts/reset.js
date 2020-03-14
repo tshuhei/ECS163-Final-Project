@@ -18,7 +18,7 @@ reset.button = reset.svg.append("rect")
                             main.wholeYearData = main.originalData;
                             //reset the singleYearData
                             main.singleYearData = main.originalData.filter(function(datum){
-                                return datum.year === main.START_YEAR;
+                                return datum.year === main.END_YEAR;
                             });
                             //reset all charts
                             //init(reset.data) should be init() in the final version.

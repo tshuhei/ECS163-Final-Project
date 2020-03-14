@@ -14,7 +14,7 @@ main.init = function(error, data) {
     main.wholeYearData = data;
     //initialize singleYearData. Data only in 1985
     main.singleYearData = data.filter(function(datum) {
-        return datum.year === main.START_YEAR;
+        return datum.year === main.END_YEAR;
     });
 
     // initialize each part
