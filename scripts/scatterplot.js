@@ -48,12 +48,6 @@ var yAxisTitle = scatterplot.svg.append("text")
         .attr("font-size", "15 px")
         .text("Population");
 
-var scatterTitle = scatterplot.svg.append("text")
-        .attr("x", 250)
-        .attr("y", 20)
-        .attr("font-weight", "bold")
-        .attr("font-size", "15 px")
-        .text("GDP Percap vs Population");            
 
 
 
@@ -102,7 +96,8 @@ function updateCircle(updateSelection,color){
         .style("opacity", 0.8)
         .attr("r", 5)
 
-/*  updates both x and y axis based on the selection of the histogram
+/* 
+    updates both x and y axis based on the selection of the histogram
     the default data that is loaded in is the GDP_percap vs Population
 */
     if(updatedxAxis === "GDP_percap"){
