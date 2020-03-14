@@ -1,31 +1,30 @@
-
 main = {};
 main.originalData = null;
 main.wholeYearData = null;
-main.singleYearData = null;//initial year = 1985
-main.init = function(error, data){
-    if(error) throw error;
+main.singleYearData = null; //initial year = 1985
+main.init = function(error, data) {
+    if (error) throw error;
     // preprocess data so that the type string is converted to number
     main.preprocess(data);
     main.data = data;
-    
+
     //initialize originalData. NEVER CHANGE!
     main.originalData = data;
     //initialize wholeYearData
     main.wholeYearData = data;
     //initialize singleYearData. Data only in 1985
-    main.singleYearData = data.filter(function(datum){
+    main.singleYearData = data.filter(function(datum) {
         return datum.year === main.START_YEAR;
     });
 
     // initialize each part
     //TODO: init(data) should be init() in the final version
     // first initialize sunburst, so that other charts can use color map defined in sunburst to color their curves/points
-    sunburst.init();//init();
-    curvechart.init();//init();
-    scatterplot.init(data);//init();
-    histogram.init(data);//init();
-    reset.init(data);//init();
+    sunburst.init(); //init();
+    curvechart.init(); //init();
+    scatterplot.init(data); //init();
+    histogram.init(); //init();
+    reset.init(data); //init();
 }
 
 
@@ -37,16 +36,15 @@ main.init = function(error, data){
  * subregion: string;
  * country: string;
  * others: if available is true then others are of type number. Otherwise others are 'NA'.
- * 
+ *
  * Also, this function will initialize main.START_YAER and main.END_YEAR.
  */
-main.preprocess = function(data){
-    for(let datum of data){
+main.preprocess = function(data) {
+    for (let datum of data) {
         datum.year = Number(datum.year);
-        if(datum.suicide_no === 'NA'){
+        if (datum.suicide_no === 'NA') {
             datum.available = false;
-        }
-        else{
+        } else {
             datum.available = true;
             // convert other fields to type number, if applicable
             datum.suicide_no = Number(datum.suicide_no);
@@ -60,8 +58,8 @@ main.preprocess = function(data){
     // find the start year and end year
     let countrySample = data[0].country;
     let year;
-    for(let datum of data){
-        if(datum.country !== countrySample){
+    for (let datum of data) {
+        if (datum.country !== countrySample) {
             break;
         }
         year = datum.year;
@@ -71,24 +69,22 @@ main.preprocess = function(data){
 
 /**
  * get the datum of a specific country in a specific year
- * 
+ *
  * if the year is not in [main.START_YEAR, main.END_YEAR], null is returned
  * if the year is in that interval but the datum.available is false, null is returned as well
  * @param {array} data the data we have
  * @param {string} country
  * @param {number} year
  */
-main.getItem = function(data, country, year){
-    if(year < main.START_YEAR || year > main.END_YEAR){
+main.getItem = function(data, country, year) {
+    if (year < main.START_YEAR || year > main.END_YEAR) {
         return null;
-    }
-    else{
-        for(let datum of data){
-            if(datum.year === year && datum.country === country){
-                if(datum.available){
+    } else {
+        for (let datum of data) {
+            if (datum.year === year && datum.country === country) {
+                if (datum.available) {
                     return datum;
-                }
-                else{
+                } else {
                     return null;
                 }
             }
@@ -109,7 +105,7 @@ main.getItem = function(data, country, year){
     //     if(found === false){
     //         return null;
     //     }
-    //     datum = data[i * yearNum + year - this.START_YEAR] 
+    //     datum = data[i * yearNum + year - this.START_YEAR]
     //     if(datum.available === true){
     //         return datum;
     //     }

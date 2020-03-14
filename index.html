@@ -1,35 +1,36 @@
 <!DOCTYPE html>
 <html>
-    <head>
+
+<head>
     <meta charset="utf-8">
     <link rel="stylesheet" type="text/css" href="style.css">
-    </head>
+</head>
 
-    <body>
-        <svg id="curvechart">
-            <defs>
-                <g id="pointer" transform="scale(0.4)">
-                    <path d="M0-1c-14.5-25.6-14.5-25.7-14.5-33.8c0-8.1,6.5-14.6,14.5-14.6s14.5,6.6,14.5,14.6C14.5-26.7,14.5-26.6,0-1z"></path>
-                    <path d="M0-49c7.7,0,14,6.3,14,14.1c0,8,0,8.1-14,32.8c-14-24.7-14-24.9-14-32.8C-14-42.7-7.7-49,0-49 M0-50c-8.3,0-15,6.8-15,15.1 S-15-26.5,0,0c15-26.5,15-26.5,15-34.9S8.3-50,0-50L0-50z"></path>
-                </g>
-            </defs>
-        </svg>
-        <svg id="scatterplot"></svg>
-        <svg id="sunburst"></svg>
-        <svg id="histogram"></svg>
-        <svg id="reset"></svg>
-    </body>
+<body>
+    <svg id="curvechart">
+        <defs>
+            <g id="pointer" transform="scale(0.4)">
+                <path d="M0-1c-14.5-25.6-14.5-25.7-14.5-33.8c0-8.1,6.5-14.6,14.5-14.6s14.5,6.6,14.5,14.6C14.5-26.7,14.5-26.6,0-1z"></path>
+                <path d="M0-49c7.7,0,14,6.3,14,14.1c0,8,0,8.1-14,32.8c-14-24.7-14-24.9-14-32.8C-14-42.7-7.7-49,0-49 M0-50c-8.3,0-15,6.8-15,15.1 S-15-26.5,0,0c15-26.5,15-26.5,15-34.9S8.3-50,0-50L0-50z"></path>
+            </g>
+        </defs>
+    </svg>
+    <svg id="scatterplot"></svg>
+    <svg id="sunburst"></svg>
+    <svg id="histogram"></svg>
+    <svg id="reset"></svg>
+</body>
+<!--library scripts-->
+<script src="./scripts/d3/d3.v4.js"></script>
+<script src="./scripts/d3/d3.scale.chromatic.js"></script>
+<script src="./scripts/d3/d3.topojson.js"></script>
+<script src="./scripts/d3/d3.queue.js"></script>
+<!--our scripts-->
+<script src="./scripts/curvechart.js"></script>
+<script src="./scripts/scatterplot.js"></script>
+<script src="./scripts/sunburst.js"></script>
+<script src="./scripts/histogram.js"></script>
+<script src="./scripts/main.js"></script>
+<script src="./scripts/reset.js"></script>
 
-    <!--library scripts-->
-    <script src="./scripts/d3/d3.v4.js"></script>
-    <script src="./scripts/d3/d3.scale.chromatic.js"></script>
-    <script src="./scripts/d3/d3.topojson.js"></script>
-    <script src="./scripts/d3/d3.queue.js"></script>
-    <!--our scripts-->
-    <script src="./scripts/curvechart.js"></script>
-    <script src="./scripts/scatterplot.js"></script>
-    <script src="./scripts/sunburst.js"></script>
-    <script src="./scripts/histogram.js"></script>
-    <script src="./scripts/main.js"></script>
-    <script src="./scripts/reset.js"></script>
 </html>
