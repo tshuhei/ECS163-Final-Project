@@ -85,12 +85,13 @@ scatterplot.update = function(duration){
     var entering = circles
         .enter().append("circle")
         .attr("class", "non_brushed")
+        .style("fill",main.color)
         .classed("circle",true);
 
 // update the circles depending on the available data
-function updateCircle(updateSelection,color){
+function updateCircle(updateSelection){
     updateSelection
-        .style("fill",color)
+        .style("fill",main.color)
         .attr("class", "non_brushed")
         .style("opacity", 0.8)
         .attr("r", 5)
@@ -193,7 +194,7 @@ function highlightBrushed(){
             return isBrushed(scatterplot.brush_cords, cx, cy);
         })
         .attr("class", "brushed")  // assigned the brushed class to all the circles that have been selected
-        .style("fill", "orange");
+        .style("fill", "purple");
 
         circles.filter(function(){
             var cx = d3.select(this).attr("cx"),
@@ -202,7 +203,7 @@ function highlightBrushed(){
             return isBrushed(scatterplot.brush_cords, cx, cy);
         })
         .attr("class", "brushed")  // assigned the brushed class to all the circles that have been selected
-        .style("fill", "orange");
+        .style("fill", "purple");
 
         // save the selected brushed element's countries into a variable
 
@@ -248,6 +249,7 @@ function isBrushed(brush_cords, cx,cy){
             .duration(150)
             .ease(d3.easeLinear)
             .attr("class", "non_brushed")
+            .style("fill", main.color)
             sunburst.update(duration);
             histogram.update(duration);
             curvechart.update(duration);
