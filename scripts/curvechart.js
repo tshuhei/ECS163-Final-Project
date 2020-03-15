@@ -151,7 +151,7 @@ curvechart.setControlAxis = function(){
         .attr('font-size', 30)
         .attr('font-family','Arial, Helvetica, sans-serif')
         .attr('transform', `translate(${bbox.width/2}, ${this.margin.top * 2/3})`)
-        .text('Suicide, Population and GDP');
+        .text('Suicide Analysis System');
 
     let controlSvg = d3.select('#curvechart')
         .select('#control')
