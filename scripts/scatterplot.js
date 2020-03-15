@@ -39,6 +39,7 @@ var xAxisTitle = scatterplot.svg.append("text")
         .attr("font-weight", "bold")
         .attr("font-size", "15 px")
         
+
 var yAxisTitle = scatterplot.svg.append("text")
         .attr("x", -180)
         .attr("y", -5)
@@ -67,8 +68,8 @@ scatterplot.init = function(){
  * and plot the data
  */
 scatterplot.update = function(duration){
-   // console.log("x axis:", scatterplot.updatedxAxis);
-   // console.log("y axis:", scatterplot.updatedyAxis);
+//    console.log("x axis:", scatterplot.updatedxAxis);
+//    console.log("y axis:", scatterplot.updatedyAxis);
 
     let data = main.singleYearData;
     let wholeData = main.wholeYearData;
@@ -84,12 +85,13 @@ scatterplot.update = function(duration){
     var entering = circles
         .enter().append("circle")
         .attr("class", "non_brushed")
+        .style("fill",main.color)
         .classed("circle",true);
 
 // update the circles depending on the available data
-function updateCircle(updateSelection,color){
+function updateCircle(updateSelection){
     updateSelection
-        .style("fill",color)
+        .style("fill",main.color)
         .attr("class", "non_brushed")
         .style("opacity", 0.8)
         .attr("r", 5)
@@ -192,10 +194,6 @@ function highlightBrushed(){
             return isBrushed(scatterplot.brush_cords, cx, cy);
         })
         .attr("class", "brushed")  // assigned the brushed class to all the circles that have been selected
-<<<<<<< Updated upstream
-        .style("fill", "orange");
-=======
->>>>>>> Stashed changes
 
         circles.filter(function(){
             var cx = d3.select(this).attr("cx"),
@@ -204,10 +202,6 @@ function highlightBrushed(){
             return isBrushed(scatterplot.brush_cords, cx, cy);
         })
         .attr("class", "brushed")  // assigned the brushed class to all the circles that have been selected
-<<<<<<< Updated upstream
-        .style("fill", "orange");
-=======
->>>>>>> Stashed changes
 
         // save the selected brushed element's countries into a variable
 
@@ -230,7 +224,7 @@ function highlightBrushed(){
         sunburst.update(duration);
         histogram.update(duration);
         curvechart.update(duration);
-      //  console.log("wholeYearData",main.wholeYearData);
+       // console.log("wholeYearData",main.wholeYearData);
        // console.log("singleYearData",main.singleYearData);
     }
 }
@@ -253,6 +247,7 @@ function isBrushed(brush_cords, cx,cy){
             .duration(150)
             .ease(d3.easeLinear)
             .attr("class", "non_brushed")
+            .style("fill", main.color)
             sunburst.update(duration);
             histogram.update(duration);
             curvechart.update(duration);
