@@ -48,6 +48,12 @@ var yAxisTitle = scatterplot.svg.append("text")
         .attr("font-size", "15 px")
         .text("Population");
 
+var scatterTitle = scatterplot.svg.append("text")
+        .attr("x", 250)
+        .attr("y", 20)
+        .attr("font-weight", "bold")
+        .attr("font-size", "15 px")
+        .text("GDP Percap vs Population");            
 
 
 
@@ -96,12 +102,10 @@ function updateCircle(updateSelection,color){
         .style("opacity", 0.8)
         .attr("r", 5)
 
-/* 
-    updates both x and y axis based on the selection of the histogram
+/*  updates both x and y axis based on the selection of the histogram
     the default data that is loaded in is the GDP_percap vs Population
 */
     if(updatedxAxis === "GDP_percap"){
-        
         //update x axis
         scatterplot.x.domain(d3.extent(data,function(d) {return d.GDP_percap}))
         scatterplot.xAxis.transition().call(d3.axisBottom(scatterplot.x))
@@ -148,7 +152,6 @@ function updateCircle(updateSelection,color){
 
         updateSelection
             .attr("cy", function(d) {return scatterplot.y(d.GDP_percap);})}
-    
     else if(updatedyAxis === "suicide_ratio"){
 
         scatterplot.y.domain(d3.extent(data,function(d) {return d.suicide_ratio}))
@@ -159,6 +162,8 @@ function updateCircle(updateSelection,color){
     }
         
     }
+
+  
 
     // update the new data
     updateCircle(entering.transition().duration(duration));
@@ -182,7 +187,6 @@ function updateCircle(updateSelection,color){
 
 // gets all the circles within the brushed selection 
 
-// HELP ME HERE :) 
 function highlightBrushed(){
     if (d3.event.selection != null){
         entering.attr("class", "non_brushed");
@@ -209,22 +213,16 @@ function highlightBrushed(){
 
         // save the selected brushed element's countries into a variable
 
-        /* I didn't know how else to access the country data from the selected brushed items so I put .map(function...) 
-        from what I saw from Stackoverflow. There could be a problem that, i'm not sure. In the console looks like d_brushed items are stored in a array */
-
         var d_brushed = d3.selectAll(".brushed").data().map(function(d) {return d.country});
         console.log("brushed elements", d_brushed);
         
         // filter the single and whole year data by countries 
-
-        /* IDK there might be a problem b/c d_brushed is being stored in an array? */
-
         main.singleYearData = data.filter(function(datum){
-            if(datum.country === d_brushed){
+            if(d_brushed.includes(datum.country)){
                 return datum;}
 
         main.wholeYearData = wholeData.filter(function(datum){
-            if(datum.country === d_brushed){
+            if(d_brushed.includes(datum.country)){
                 return datum;}
         })
     })
