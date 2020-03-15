@@ -10,7 +10,99 @@ scatterplot.margins = {
     right: 30
 };
 
+scatterplot.istt = false;
+
 scatterplot.svg = d3.select("#scatterplot");
+
+scatterplot.svg.on("click",function(){
+    if(scatterplot.istt){
+        scatterplot.svg.select(".tooltip").remove();
+        scatterplot.istt = false;
+    }else{
+        let xpos = d3.mouse(this)[0];
+        let ypos = d3.mouse(this)[1];
+        let nearXpos = 0;
+        let nearYpos = 0;
+        let selectedElement = null;
+        console.log("x",xpos);
+        console.log("y",ypos);
+
+        let allCountries = scatterplot.svg.selectAll("circle")._groups[0];
+        //let cxList = [];
+        //let cyList = [];
+        let nearest = 10000;
+        allCountries.forEach(element => {
+            console.log(element.__data__);
+            //cxList.push(Math.abs(+element.attributes.cx.nodeValue - xpos));
+            //cyList.push(Math.abs(+element.attributes.cy.nodeValue - ypos));
+            let distance = Math.sqrt(Math.abs(+element.attributes.cx.nodeValue - xpos)^2 + Math.abs(+element.attributes.cy.nodeValue - ypos)^2);
+            if(nearest>distance){
+                nearest = distance;
+                nearXpos = +element.attributes.cx.nodeValue;
+                nearYpos = +element.attributes.cy.nodeValue;
+                selectedElement = element.__data__;
+            }
+        });
+    
+        let tt = scatterplot.svg.append("g")
+        .attr("class","tooltip");
+    
+        tt.append("rect")
+        //.attr("transform","translate("+xpos+","+ypos+")")
+        .attr("width",70)
+        .attr("height",35)
+        .attr("x",nearXpos)
+        .attr("y",nearYpos)
+        .attr("fill","gray");  
+        scatterplot.istt = true;  
+
+        tt.append("text")
+        .attr("x",nearXpos)
+        .attr("y",nearYpos + 10)
+        .attr("font-size",10)
+        .attr("fill","white")
+        .text(selectedElement.country);
+
+        tt.append("text")
+        .attr("x",nearXpos)
+        .attr("y",nearYpos + 20)
+        .attr("font-size",10)
+        .attr("fill","white")
+        .text(function(){
+            switch(scatterplot.updatedxAxis){
+                case "GDP_percap":
+                    return "GDP:"+selectedElement.GDP_percap;
+                case "population":
+                    return "Pop:"+selectedElement.population;
+                case "suicide_ratio":
+                    return "Ratio:"+selectedElement.suicide_ratio;
+                default:
+                    return "";
+            }
+        });
+
+        tt.append("text")
+        .attr("x",nearXpos)
+        .attr("y",nearYpos + 30)
+        .attr("font-size",10)
+        .attr("fill","white")
+        .text(function(){
+            switch(scatterplot.updatedyAxis){
+                case "GDP_percap":
+                    return "GDP:"+selectedElement.GDP_percap;
+                case "population":
+                    return "Pop:"+selectedElement.population;
+                case "suicide_ratio":
+                    return "Ratio:"+selectedElement.suicide_ratio;
+                default:
+                    return "";
+            }
+        });
+
+    }
+});
+
+
 scatterplot.boundingbox = scatterplot.svg.node().getBoundingClientRect();
 
 scatterplot.brush = d3.brush();
@@ -34,8 +126,8 @@ scatterplot.yAxis = scatterplot.svg.append("g")
     .attr("transform", "translate(" + (scatterplot.margins.left ) + ")");
 
 var xAxisTitle = scatterplot.svg.append("text")
-        .attr("x", 400)
-        .attr("y", 465)
+        .attr("x", scatterplot.width/2)
+        .attr("y", scatterplot.height*1.1)
         .attr("font-weight", "bold")
         .attr("font-size", "15 px")
         
@@ -73,7 +165,6 @@ scatterplot.update = function(duration){
 
     let data = main.singleYearData;
     let wholeData = main.wholeYearData;
-
  
     // filter singleYearData by the available data
     data = data.filter((d) => { return d.available; })
@@ -86,7 +177,25 @@ scatterplot.update = function(duration){
         .enter().append("circle")
         .attr("class", "non_brushed")
         .style("fill",main.color)
-        .classed("circle",true);
+        .classed("circle",true)
+        /*.on("mouseover",function(d,i){
+            let xpos = d3.mouse(this)[0];
+            let ypos = d3.mouse(this)[1];
+            console.log("xpos",xpos);
+            let tt = scatterplot.svg.append("g")
+                    .attr("class","tooltip");
+            tt.append("rect")
+                //.attr("transform","translate("+xpos+","+ypos+")")
+                .attr("width",120)
+                .attr("height",50)
+                .attr("x",xpos)
+                .attr("y",ypos)
+                .attr("fill","gray");
+            
+        })
+        .on("mouseout",function(d,i){
+            scatterplot.svg.select(".tooltip").remove();
+        })*/;
 
 // update the circles depending on the available data
 function updateCircle(updateSelection){

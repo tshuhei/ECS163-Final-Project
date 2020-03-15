@@ -159,3 +159,4 @@ main.color = function(datum){
 }
 
 d3.csv('./data/suicide_new.csv', main.init);
+
