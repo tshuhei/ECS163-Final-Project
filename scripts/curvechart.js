@@ -106,6 +106,8 @@ curvechart.init = function(){
     this.EPSILON = 1e-8;
     this.IN_DURATION = 990;
     this.EX_DURATION = 1000;
+    this.MAX_DIM = 0.6;
+    this.MIN_DIM = 0.1;
     this.parseTime = d3.timeParse('%Y');
     this.animating = false;
     this.currentStart = main.START_YEAR;
@@ -420,7 +422,7 @@ curvechart.setStrokeGroup = function(){
         .attr('class', function(name){
             return curvechart.normalize(name) + 'Curve';
         })
-        .attr('opacity', 1)
+        .attr('opacity', curvechart.MAX_DIM)
         .on('mousemove', function(country){
             let highlightedEle = d3.select(this);
             highlightedEle.raise();
@@ -435,7 +437,7 @@ curvechart.setStrokeGroup = function(){
                 })
                 .transition()
                 .duration(50)
-                .attr('opacity', 0.2);
+                .attr('opacity', curvechart.MIN_DIM);
             
             //let mouseX = d3.event.x;
             let mouseX = d3.mouse(document.getElementById('curvechart'))[0] - curvechart.margin.left;
@@ -468,7 +470,7 @@ curvechart.setStrokeGroup = function(){
             d3.select('#curvechart').selectAll('.curvechartTooltip').remove();
             strokeGroup.selectAll('g')
                 .transition()
-                .attr('opacity', 1);
+                .attr('opacity', curvechart.MAX_DIM);
         });
 }
 /**
@@ -547,7 +549,11 @@ curvechart.__update__ = function(duration, crtyear = curvechart.now){
                     })
                     .transition()
                     .duration(duration)
-                    .attrTween('stroke-dasharray', tweenDash);
+                    .attrTween('stroke-dasharray', tweenDash)
+                    .attr('stroke', function(country){
+                        let datum = curvechart.localData[crtyear.toString()][country];
+                        return main.color(datum);
+                    })
             }
         });
     

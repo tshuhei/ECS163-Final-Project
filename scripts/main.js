@@ -40,7 +40,7 @@ main.init = function(error, data) {
  * Also, this function will initialize main.START_YAER and main.END_YEAR.
  */
 main.preprocess = function(data) {
-    console.log("data",data)
+    // console.log("data",data)
     for (let datum of data) {
         datum.year = Number(datum.year);
         if (datum.suicide_no === 'NA') {
@@ -131,7 +131,7 @@ main.getItem = function(data, country, year) {
  */
 main.color = function(datum){
     let color;
-    console.log(datum)
+    // console.log(datum);
     switch(datum.region){
         case "Europe":
             color="blue";
