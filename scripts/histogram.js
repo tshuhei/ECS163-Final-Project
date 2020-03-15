@@ -52,8 +52,6 @@ histogram.createCharts = function() {
     this.chart.selectAll("g").remove();
     this.svg = this.chart.append("g").attr("transform",
         `translate(${this.margins.left}, ${this.margins.top})`);
-
-    this.svg.selectAll("g").remove();
     // Create each rect for histogram
     this.columns.forEach((col) => {
 
@@ -72,7 +70,7 @@ histogram.createCharts = function() {
         // Create d3 histogram object to create chart
         this.histo.value((d) => { return d[col]; })
             .domain(this.x.domain())
-            .thresholds(this.x.ticks(50));
+            .thresholds(this.x.ticks(20));
 
         // Apply the histogram object to our data
         var bins = this.histo(this.currentData);
