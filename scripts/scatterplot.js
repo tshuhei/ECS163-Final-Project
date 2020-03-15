@@ -13,7 +13,9 @@ scatterplot.margins = {
 scatterplot.svg = d3.select("#scatterplot");
 scatterplot.boundingbox = scatterplot.svg.node().getBoundingClientRect();
 
-var brush = d3.brush();
+scatterplot.brush = d3.brush();
+scatterplot.updatedxAxis = "GDP_percap";
+scatterplot.updatedyAxis = "population";
 
 scatterplot.svgWidth = scatterplot.boundingbox.width;
 scatterplot.svgHeight = scatterplot.boundingbox.height;
@@ -46,16 +48,7 @@ var yAxisTitle = scatterplot.svg.append("text")
         .attr("transform" , "rotate(-90)")
         .attr("font-weight", "bold")
         .attr("font-size", "15 px")
-        .text("Population");
-
-var scatterTitle = scatterplot.svg.append("text")
-        .attr("x", 250)
-        .attr("y", 20)
-        .attr("font-weight", "bold")
-        .attr("font-size", "15 px")
-        .text("GDP Percap vs Population");            
-
-
+        .text("Population");     
 
 /**
  * initialize the chart
@@ -65,7 +58,7 @@ var scatterTitle = scatterplot.svg.append("text")
 
  
 scatterplot.init = function(){
-    scatterplot.update(0,"GDP_percap","population")
+    scatterplot.update(0)
     
 } 
 
@@ -74,9 +67,9 @@ scatterplot.init = function(){
  * fetch the global snigleYearData
  * and plot the data
  */
-scatterplot.update = function(duration,updatedxAxis,updatedyAxis){
-    console.log("x axis:", updatedxAxis)
-    console.log("y axis:", updatedyAxis);
+scatterplot.update = function(duration){
+    console.log("x axis:", scatterplot.updatedxAxis);
+    console.log("y axis:", scatterplot.updatedyAxis);
 
     let data = main.singleYearData;
     let wholeData = main.wholeYearData;
@@ -105,7 +98,7 @@ function updateCircle(updateSelection,color){
 /*  updates both x and y axis based on the selection of the histogram
     the default data that is loaded in is the GDP_percap vs Population
 */
-    if(updatedxAxis === "GDP_percap"){
+    if(scatterplot.updatedxAxis === "GDP_percap"){
         //update x axis
         scatterplot.x.domain(d3.extent(data,function(d) {return d.GDP_percap}))
         scatterplot.xAxis.transition().call(d3.axisBottom(scatterplot.x))
@@ -117,7 +110,7 @@ function updateCircle(updateSelection,color){
            }
        
         
-    else if(updatedxAxis === "population"){
+    else if(scatterplot.updatedxAxis === "population"){
         
         scatterplot.x.domain(d3.extent(data,function(d) {return d.population}))
         scatterplot.xAxis.transition().call(d3.axisBottom(scatterplot.x))
@@ -126,7 +119,7 @@ function updateCircle(updateSelection,color){
         updateSelection
             .attr("cx", function(d) {return scatterplot.x(d.population);})}
 
-    else if (updatedxAxis === "suicide_ratio"){
+    else if (scatterplot.updatedxAxis === "suicide_ratio"){
 
         scatterplot.x.domain(d3.extent(data,function(d) {return d.suicide_ratio}))
         scatterplot.xAxis.transition().call(d3.axisBottom(scatterplot.x))
@@ -136,7 +129,7 @@ function updateCircle(updateSelection,color){
             .attr("cx", function(d) {return scatterplot.x(d.suicide_ratio);})}
         
 
-    if(updatedyAxis === "population"){
+    if(scatterplot.updatedyAxis === "population"){
 
         scatterplot.y.domain(d3.extent(data,function(d) {return d.population}))
         scatterplot.yAxis.transition().call(d3.axisLeft(scatterplot.y))
@@ -144,7 +137,7 @@ function updateCircle(updateSelection,color){
         updateSelection
             .attr("cy", function(d) {return scatterplot.y(d.population);})}
             
-    else if(updatedyAxis === "GDP_percap"){
+    else if(scatterplot.updatedyAxis === "GDP_percap"){
 
         scatterplot.y.domain(d3.extent(data,function(d) {return d.GDP_percap}))
         scatterplot.yAxis.transition().call(d3.axisLeft(scatterplot.y))
@@ -152,7 +145,7 @@ function updateCircle(updateSelection,color){
 
         updateSelection
             .attr("cy", function(d) {return scatterplot.y(d.GDP_percap);})}
-    else if(updatedyAxis === "suicide_ratio"){
+    else if(scatterplot.updatedyAxis === "suicide_ratio"){
 
         scatterplot.y.domain(d3.extent(data,function(d) {return d.suicide_ratio}))
         scatterplot.yAxis.transition().call(d3.axisLeft(scatterplot.y))
@@ -176,12 +169,12 @@ function updateCircle(updateSelection,color){
     if(curvechart.animating){
         
     }
-    else{brush
+    else{scatterplot.brush
         .on("brush", highlightBrushed)
         .on("end", brushended);
 
     scatterplot.svg.append("g")
-        .call(brush);
+        .call(scatterplot.brush);
     }
 
 
@@ -191,13 +184,13 @@ function highlightBrushed(){
     if (d3.event.selection != null){
         entering.attr("class", "non_brushed");
 
-        var brush_cords = d3.brushSelection(this);
+         scatterplot.brush_cords = d3.brushSelection(this);
 
         entering.filter(function(){
             var cx = d3.select(this).attr("cx"),
                 cy = d3.select(this).attr("cy");
                 
-            return isBrushed(brush_cords, cx, cy);
+            return isBrushed(scatterplot.brush_cords, cx, cy);
         })
         .attr("class", "brushed")  // assigned the brushed class to all the circles that have been selected
         .style("fill", "orange");
@@ -206,26 +199,32 @@ function highlightBrushed(){
             var cx = d3.select(this).attr("cx"),
                 cy = d3.select(this).attr("cy");
                 
-            return isBrushed(brush_cords, cx, cy);
+            return isBrushed(scatterplot.brush_cords, cx, cy);
         })
         .attr("class", "brushed")  // assigned the brushed class to all the circles that have been selected
         .style("fill", "orange");
 
         // save the selected brushed element's countries into a variable
 
-        var d_brushed = d3.selectAll(".brushed").data().map(function(d) {return d.country});
-        console.log("brushed elements", d_brushed);
+        scatterplot.d_brushed = d3.selectAll(".brushed").data().map(function(d) {return d.country});
+        console.log("brushed elements", scatterplot.d_brushed);
         
         // filter the single and whole year data by countries 
         main.singleYearData = data.filter(function(datum){
-            if(d_brushed.includes(datum.country)){
+            if(scatterplot.d_brushed.includes(datum.country)){
                 return datum;}
 
         main.wholeYearData = wholeData.filter(function(datum){
-            if(d_brushed.includes(datum.country)){
+            if(scatterplot.d_brushed.includes(datum.country)){
                 return datum;}
+
+        
         })
+
     })
+        sunburst.update(duration);
+        histogram.update(duration);
+        curvechart.update(duration);
         console.log("wholeYearData",main.wholeYearData);
         console.log("singleYearData",main.singleYearData);
     }
@@ -249,14 +248,17 @@ function isBrushed(brush_cords, cx,cy){
             .duration(150)
             .ease(d3.easeLinear)
             .attr("class", "non_brushed")
-            return
+            sunburst.update(duration);
+            histogram.update(duration);
+            curvechart.update(duration);
+            
         }
     }          
   
 
 
-console.log("newx",updatedxAxis);
-console.log("newy",updatedyAxis);
+console.log("newx",scatterplot.updatedxAxis);
+console.log("newy",scatterplot.updatedyAxis);
 
 };
 
@@ -266,9 +268,16 @@ console.log("newy",updatedyAxis);
 * and re plot the data
 * create new axis object, and assign them
 */
-scatterplot.updateAxis = function(duration,xAxis, yAxis){
+scatterplot.updateAxis = function(x, y){
    
-    scatterplot.update(duration,xAxis,yAxis);
+    scatterplot.updatedxAxis = x;
+    scatterplot.updatedyAxis = y;
+
+    scatterplot.update(200)
+
+
+    console.log("function call x: ", scatterplot.updatedxAxis);
+    console.log("function call y: ", scatterplot.updatedyAxis);
 
 
 };
