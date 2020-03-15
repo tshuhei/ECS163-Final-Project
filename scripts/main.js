@@ -40,6 +40,7 @@ main.init = function(error, data) {
  * Also, this function will initialize main.START_YAER and main.END_YEAR.
  */
 main.preprocess = function(data) {
+    console.log("data",data)
     for (let datum of data) {
         datum.year = Number(datum.year);
         if (datum.suicide_no === 'NA') {
@@ -113,6 +114,48 @@ main.getItem = function(data, country, year) {
     //         return null;
     //     }
     // }
+}
+
+
+/**
+ * this is a function to return the color for a specific country
+ * this function check the region of the country, and return the
+ * associated color with the region.
+ * 
+ * Europe -> "blue"
+ * South America -> "orange"
+ * Asia -> "green"
+ * Oceania -> "red"
+ * Africa -> "gray"
+ * North America -> "brown"
+ */
+main.color = function(datum){
+    let color;
+    console.log(datum)
+    switch(datum.region){
+        case "Europe":
+            color="blue";
+            break;
+        case "South America":
+            color="orange";
+            break;
+        case "Asia":
+            color="green";
+            break;
+        case "Oceania":
+            color="red";
+            break;
+        case "Africa":
+            color="gray";
+            break;
+        case "North America":
+            color="brown";
+            break;
+        default:
+            color="black";
+            break;
+    }
+    return color;
 }
 
 d3.csv('./data/suicide_new.csv', main.init);

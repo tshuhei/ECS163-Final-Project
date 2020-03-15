@@ -47,7 +47,7 @@ sunburst.arc = d3.arc()
     .innerRadius(d => d.y0 * sunburst.radius)
     .outerRadius(d => Math.max(d.y0 * sunburst.radius, d.y1 * sunburst.radius - 1));
 
-sunburst.color = d3.scaleOrdinal(d3.schemeCategory10);
+//sunburst.color = d3.scaleOrdinal(d3.schemeCategory10);
 
 /**
  * initialize the chart
@@ -152,7 +152,10 @@ sunburst.update = function(duration){
             .data(root.descendants().slice(1))
             .enter()
             .append("path")
-            .attr("fill", d => { while (d.depth > 1) d = d.parent; return sunburst.color(d.data.name); })
+            .attr("fill", d => { 
+                while (d.depth > 1) d = d.parent; 
+                return sunburst.color(d.data); 
+            })
             .attr("fill-opacity", d => arcVisible(d.current) ? (d.children ? 1.0 : 0.4) : 0)
             .attr("d", d => sunburst.arc(d.current));
         
@@ -271,6 +274,34 @@ sunburst.update = function(duration){
                 const y = (d.y0 + d.y1) / 2 * sunburst.radius;
                 return `rotate(${x - 90}) translate(${y},0) rotate(${x < 180 ? 0 : 180})`;
             }
+}
+
+sunburst.color = function(datum){
+    let color;
+    switch(datum.name){
+        case "Europe":
+            color="blue";
+            break;
+        case "South America":
+            color="orange";
+            break;
+        case "Asia":
+            color="green";
+            break;
+        case "Oceania":
+            color="red";
+            break;
+        case "Africa":
+            color="gray";
+            break;
+        case "North America":
+            color="brown";
+            break;
+        default:
+            color="black";
+            break;
+    }
+    return color;
 }
 
 /*
