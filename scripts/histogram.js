@@ -109,13 +109,14 @@ histogram.createCharts = function() {
                     .left +
                     (
                         count * this.width) / n;
-                return `translate(${offset},${histogram.y(d.length)})`
+                return `translate(${offset},${histogram.y(d.length) + 5})`
             })
             .attr("width", function(d) {
                 return histogram.x(d.x1) - histogram.x(d.x0);
             })
             .attr("height", function(d) {
-                return (histogram.height - histogram.y(d.length));
+                return (histogram.height - histogram.y(d.length) -
+                    5);
             })
             .style("fill", this.color);
 
@@ -234,13 +235,13 @@ histogram.update = function(duration) {
                     .left +
                     (
                         count * this.width) / n;
-                return `translate(${offset},${histogram.y(d.length)})`
-            })
-            .attr("width", function(d) {
+                return `translate(${offset},${histogram.y(d.length)+5})`
+}) .attr("width", function(d) {
                 return histogram.x(d.x1) - histogram.x(d.x0);
             })
             .attr("height", function(d) {
-                return (histogram.height - histogram.y(d.length));
+                return (histogram.height - histogram.y(d.length) -
+                    5);
             });
 
 
