@@ -139,9 +139,9 @@ sunburst.update = function(duration){
             .attr("fill","white")
             .text("BACK")
     
-        sunburst.svg.append("text")
-                    .attr("x",sunburst.svgWidth/2)
-                    .attr("y",sunburst.svgHeight)
+        g.append("text")
+                    .attr("x",0)
+                    .attr("y",sunburst.height/2*1.2)
                     .attr("fill","black")
                     .attr("font-size",15)
                     .attr("text-anchor","middle")
