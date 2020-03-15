@@ -33,33 +33,12 @@ histogram.init = function() {
     var client = d3.select("#histogram").node().getBoundingClientRect();
     this.width = client.width - this.margins.left - this.margins.right;
     this.height = client.height - this.margins.top - this.margins.bottom;
-    this.svg = d3.select("#histogram")
-        .append("g")
-        .attr("transform",
-            `translate(${this.margins.left}, ${this.margins.top})`);
+    this.chart = d3.select("#histogram");
 
     this.x.range([0, this.height]);
     this.y.range([this.height, 0]);
 
     this.createCharts();
-};
-
-
-/**
- * update the data using a transition
- * @param {number} year the new year in which data need to be displayed
- * @param {number} duration the duration of the transition
- */
-histogram.updateYear = function(year, duration) {
-
-};
-
-/**
- * apply the current filters to histogram data
- * @param undecided
- */
-histogram.applyFilter = function() {
-
 };
 
 /**
@@ -70,6 +49,9 @@ histogram.applyFilter = function() {
 histogram.createCharts = function() {
     var n = this.columns.length;
     var count = 0;
+    this.chart.selectAll("g").remove();
+    this.svg = this.chart.append("g").attr("transform",
+        `translate(${this.margins.left}, ${this.margins.top})`);
     // Create each rect for histogram
     this.columns.forEach((col) => {
 
@@ -80,8 +62,7 @@ histogram.createCharts = function() {
         // Format and append titles to each histogram
         this.svg.append("text")
             .attr("x", (count * this.width / n) + (this.width /
-                (
-                    2.5 * n)))
+                (2.5 * n)))
             .attr("y", 0)
             .html(col.charAt(0).toUpperCase() + col.slice(1).replace(
                 "_", " "));
@@ -89,7 +70,7 @@ histogram.createCharts = function() {
         // Create d3 histogram object to create chart
         this.histo.value((d) => { return d[col]; })
             .domain(this.x.domain())
-            .thresholds(this.x.ticks(50));
+            .thresholds(this.x.ticks(20));
 
         // Apply the histogram object to our data
         var bins = this.histo(this.currentData);
@@ -192,6 +173,7 @@ histogram.createCharts = function() {
     })
 
 };
+
 /*
  *  Update all charts with new data.
  *  histogram..currentData should be updated before calling this function.
@@ -215,11 +197,7 @@ histogram.update = function(duration) {
 
         // Apply the histogram object to our data
         var bins = this.histo(this.currentData);
-        let i = 0
-        bins.forEach((d) => {
-            d.position = i;
-            i++;
-        })
+
         // Create and scale Y axis based on our bins
         this.y.domain([0, d3.max(bins, (d) => { return d.length; })]);
 
@@ -264,6 +242,8 @@ histogram.update = function(duration) {
             .attr("height", function(d) {
                 return (histogram.height - histogram.y(d.length));
             });
+
+
 
         this.svg.select(`.subChart${count}`)
             .data([count])
