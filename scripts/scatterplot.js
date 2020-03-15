@@ -67,8 +67,8 @@ scatterplot.init = function(){
  * and plot the data
  */
 scatterplot.update = function(duration){
-    console.log("x axis:", scatterplot.updatedxAxis);
-    console.log("y axis:", scatterplot.updatedyAxis);
+   // console.log("x axis:", scatterplot.updatedxAxis);
+   // console.log("y axis:", scatterplot.updatedyAxis);
 
     let data = main.singleYearData;
     let wholeData = main.wholeYearData;
@@ -192,7 +192,10 @@ function highlightBrushed(){
             return isBrushed(scatterplot.brush_cords, cx, cy);
         })
         .attr("class", "brushed")  // assigned the brushed class to all the circles that have been selected
+<<<<<<< Updated upstream
         .style("fill", "orange");
+=======
+>>>>>>> Stashed changes
 
         circles.filter(function(){
             var cx = d3.select(this).attr("cx"),
@@ -201,12 +204,15 @@ function highlightBrushed(){
             return isBrushed(scatterplot.brush_cords, cx, cy);
         })
         .attr("class", "brushed")  // assigned the brushed class to all the circles that have been selected
+<<<<<<< Updated upstream
         .style("fill", "orange");
+=======
+>>>>>>> Stashed changes
 
         // save the selected brushed element's countries into a variable
 
         scatterplot.d_brushed = d3.selectAll(".brushed").data().map(function(d) {return d.country});
-        console.log("brushed elements", scatterplot.d_brushed);
+        // console.log("brushed elements", scatterplot.d_brushed);
         
         // filter the single and whole year data by countries 
         main.singleYearData = data.filter(function(datum){
@@ -224,8 +230,8 @@ function highlightBrushed(){
         sunburst.update(duration);
         histogram.update(duration);
         curvechart.update(duration);
-        console.log("wholeYearData",main.wholeYearData);
-        console.log("singleYearData",main.singleYearData);
+      //  console.log("wholeYearData",main.wholeYearData);
+       // console.log("singleYearData",main.singleYearData);
     }
 }
 
@@ -256,8 +262,8 @@ function isBrushed(brush_cords, cx,cy){
   
 
 
-console.log("newx",scatterplot.updatedxAxis);
-console.log("newy",scatterplot.updatedyAxis);
+// console.log("newx",scatterplot.updatedxAxis);
+// console.log("newy",scatterplot.updatedyAxis);
 
 };
 
@@ -275,8 +281,8 @@ scatterplot.updateAxis = function(x, y){
     scatterplot.update(200)
 
 
-    console.log("function call x: ", scatterplot.updatedxAxis);
-    console.log("function call y: ", scatterplot.updatedyAxis);
+ //   console.log("function call x: ", scatterplot.updatedxAxis);
+//  console.log("function call y: ", scatterplot.updatedyAxis);
 
 
 };
