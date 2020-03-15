@@ -39,7 +39,6 @@ var xAxisTitle = scatterplot.svg.append("text")
         .attr("font-weight", "bold")
         .attr("font-size", "15 px")
         
-
 var yAxisTitle = scatterplot.svg.append("text")
         .attr("x", -180)
         .attr("y", -5)
