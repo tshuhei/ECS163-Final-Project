@@ -49,7 +49,11 @@ html {
     width: 100%;
 }
 
-
+select{
+    position: absolute;
+    left: 70px;
+    top: 50px;
+}
 
 
 .list {
@@ -86,6 +90,6 @@ select {
 
 #strokeGroup {
     fill: none;
-    stroke-width: 2.5px;
+    stroke-width: 3px;
     stroke: blueviolet;
 }

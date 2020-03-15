@@ -43,6 +43,61 @@ curvechart.setLocalData = function(){
     this.countrySet = countrySet;
 }
 
+curvechart.tooltip = function(context, bbox, textArray){
+    const contextBbox = context.node().getBoundingClientRect();
+    const lineWidth = 15;
+    const numberofLines = textArray.length;
+    const height = (numberofLines)*lineWidth, tickSize = 10;
+    const charLen = 6;
+    // find the maximal length of a text piece in textArray
+    let length = 0;
+    textArray.forEach(function(text){
+        if(length < text.length){
+            length = text.length;
+        }
+    });
+    const width = length * charLen;
+    const textPadding = 3;
+    const boxOpacity = 0.7;
+    let xPosition = bbox.x - contextBbox.x + bbox.width/2;
+    let yPosition = bbox.y - contextBbox.y;
+    let sign = -1; // -1 means the box would float on the top. 1 means on the bottom
+    if(- numberofLines * lineWidth - tickSize/2 + textPadding + bbox.y - contextBbox.y < 0){
+        sign = 1;
+        yPosition = yPosition + bbox.height;
+    }
+    let pathCommand =
+        " M " + (- width / 2) + " " + sign*(numberofLines * lineWidth + tickSize/2 - textPadding) +
+        " h " + width + 
+        " v " + height*(-sign) + 
+        " h " + (tickSize - width) / 2 +
+        " l " + (-tickSize / 2) + " " + tickSize / 2 * (-sign) +
+        " l " + (-tickSize / 2) +  " " + (-tickSize / 2) * (-sign) +
+        " h " + (tickSize - width) / 2 +
+        " z ";
+    let tooltip = context.append("g")
+        .attr("transform", "translate(" + xPosition + " " + (yPosition) + ")")
+        .attr("class", "curvechartTooltip");
+    
+    tooltip.append("path")
+        .attr("d", pathCommand)
+        .attr("opacity" , boxOpacity)
+        .attr('fill', 'black');
+    
+    // TODO: change css for this
+    for(let i = 0; i < textArray.length; i++){
+        let texts = tooltip.append("text")
+            .attr("class", "tooltipText")
+            .text(textArray[i]);
+        if(sign < 0){
+            texts.attr("y", -(textArray.length - 1 - i) * lineWidth - tickSize/2)
+        }
+        else{
+            texts.attr("y", (i+0.5) * lineWidth + tickSize/2);
+        }
+    }
+};
+
 
 /**
  * initialize the chart using main.wholeYearData
@@ -51,13 +106,19 @@ curvechart.init = function(){
     this.EPSILON = 1e-8;
     this.IN_DURATION = 990;
     this.EX_DURATION = 1000;
-    this.type = 'suicide_ratio';
     this.parseTime = d3.timeParse('%Y');
     this.animating = false;
     this.currentStart = main.START_YEAR;
     this.currentEnd = main.END_YEAR;
     this.now = this.currentEnd;
+    let dropDown = d3.select('#curvechartType');
+    this.type = dropDown.node().value;
+    // bind select
+    dropDown.attr('onchange', 'curvechart.changeType()');
     let wholeChart = d3.select('#curvechart');
+    // in case of being called the second time, we need to first clear all the children
+    wholeChart.select('#curve').remove();
+    wholeChart.select('#control').remove();
     wholeChart.append('g')
         .attr('id', 'curve');
     wholeChart.append('g')
@@ -65,7 +126,16 @@ curvechart.init = function(){
     this.setControlAxis();
     this.setLocalData();
     this.draw();    
-}
+};
+
+curvechart.changeType = function(){
+    let list = document.getElementById('curvechartType');
+    let type = list.value;
+    curvechart.type = type;
+    this.draw();
+};
+
+
 
 curvechart.setControlAxis = function(){
     const bbox = document.getElementById('curvechart')
@@ -73,6 +143,15 @@ curvechart.setControlAxis = function(){
     const svgWidth = bbox.width;
     const svgHeight = bbox.height;
     const RADIUS = 4;
+    d3.select('#mainTitle').remove();
+    d3.select('#curvechart')
+        .append('text')
+        .attr('id', 'mainTitle')
+        .attr('text-anchor', 'middle')
+        .attr('font-size', 30)
+        .attr('font-family','Arial, Helvetica, sans-serif')
+        .attr('transform', `translate(${bbox.width/2}, ${this.margin.top * 2/3})`)
+        .text('Suicide, Population and GDP');
 
     let controlSvg = d3.select('#curvechart')
         .select('#control')
@@ -239,6 +318,7 @@ curvechart.setControlAxis = function(){
             else{
                 curvechart.animating = true;
                 mark.attr('d', stopcmd);
+                d3.select('select').property('disabled', true);
                 window.dataUpdatingInterval = window.setInterval(function(){
                     curvechart.animate();
                 }, curvechart.EX_DURATION);
@@ -278,8 +358,9 @@ curvechart.animate = function(){
  */
 curvechart.stopAnimation = function(){
     this.animating = false;
-        window.clearInterval(window.dataUpdatingInterval);
-        d3.select('#buttonMark')
+    window.clearInterval(window.dataUpdatingInterval);
+    d3.select('select').property('disabled', false);
+    d3.select('#buttonMark')
             .attr('d', function(d){
                 return d[0];
             });
@@ -319,10 +400,10 @@ curvechart.setScale = function(){
         .attr('id', 'curve-yAxis')
         .attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")")
         .call(d3.axisLeft().scale(this.yScale));
-    
+    let padding = this.type === 'suicide_ratio' ? 0 : 10;
     curveSvg.append('text')
         .attr('class', 'axisText')
-        .attr('transform', `rotate(-90) translate(${-this.margin.top - this.yScale.range()[0]/2}, ${this.margin.left/2})`)
+        .attr('transform', `rotate(-90) translate(${-this.margin.top - this.yScale.range()[0]/2}, ${this.margin.left/2 - padding})`)
         .text(this.type);
 }
 
@@ -339,7 +420,56 @@ curvechart.setStrokeGroup = function(){
         .attr('class', function(name){
             return curvechart.normalize(name) + 'Curve';
         })
-        .attr('opacity', 1);
+        .attr('opacity', 1)
+        .on('mousemove', function(country){
+            let highlightedEle = d3.select(this);
+            highlightedEle.raise();
+            const that = this;
+            d3.select('#strokeGroup')
+                .selectAll('g')
+                .filter(function(){
+                    if(this === that){
+                        return false;
+                    }
+                    return true;
+                })
+                .transition()
+                .duration(50)
+                .attr('opacity', 0.2);
+            
+            //let mouseX = d3.event.x;
+            let mouseX = d3.mouse(document.getElementById('curvechart'))[0] - curvechart.margin.left;
+            let xAxisInterval = curvechart.xScale.range()[1] / (curvechart.currentEnd - curvechart.currentStart);
+            let num_intervals = Math.round(mouseX / xAxisInterval);
+            // let cx = num_intervals * xAxisInterval;
+            let year = num_intervals + curvechart.currentStart;
+            position = curvechart.getPosition(year, country);
+            let strokeGroup = d3.select('#strokeGroup');
+            d3.select('#curvechart').selectAll('.curvechartTooltip').remove();
+            let mark = strokeGroup.append('circle')
+                .attr('class', 'curvechartTooltip')
+                .attr('cx', position[0])
+                .attr('cy', position[1])
+                .attr('r', 2)
+                .attr('stroke', 'black')
+                .attr('fill', 'black');
+            let textArray = [];
+            textArray.push(country);
+            textArray.push('year: ' + year);
+            let count = curvechart.localData[year.toString()][country][curvechart.type];
+            if(curvechart.type === 'suicide_ratio'){
+                count = count.toFixed(2);
+            }
+            textArray.push(curvechart.type + ': ' + count);
+            curvechart.tooltip(d3.select('#curvechart'), mark.node().getBoundingClientRect(), textArray);
+        })
+        .on('mouseout', function(){
+            let strokeGroup = d3.select('#strokeGroup');
+            d3.select('#curvechart').selectAll('.curvechartTooltip').remove();
+            strokeGroup.selectAll('g')
+                .transition()
+                .attr('opacity', 1);
+        });
 }
 /**
  * draw the chart based on this.localData
@@ -436,6 +566,8 @@ curvechart.__update__ = function(duration, crtyear = curvechart.now){
             return null;
         }
     }
+
+    this.getPosition = position;
 }
 
 curvechart.existQuery = function(year, country){
