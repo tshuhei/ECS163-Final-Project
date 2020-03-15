@@ -119,7 +119,6 @@ scatterplot.init = function(){
             .style("fill", "black")
         }
     }        
-        
 }
 
 /**
