@@ -181,7 +181,6 @@ histogram.createCharts = function() {
 
 histogram.update = function(duration) {
     this.currentData = main.singleYearData.filter((d) => { return d.available; })
-    console.log(this.currentData);
     var n = this.columns.length;
     var count = 0;
     // Create each rect for histogram
@@ -218,7 +217,7 @@ histogram.update = function(duration) {
             .selectAll("rect")
             .data(bins);
 
-        nodes.exit().transition().duration(duration).remove();
+        nodes.exit().remove();
 
         nodes.enter().append("rect")
             .style("fill", (d) => {
@@ -231,8 +230,6 @@ histogram.update = function(duration) {
                 }
             })
             .merge(nodes)
-            .transition()
-            .duration(duration)
             .attr("x", 1)
             .attr("transform", (d) => {
                 var offset = histogram.x(d.x0) + this.margins
@@ -250,52 +247,52 @@ histogram.update = function(duration) {
 
 
 
-        // this.svg.select(`.subChart${count}`)
-        //     .data([count])
-        //     .append("rect")
-        //     .attr("class", "chartSelect")
-        //     .attr("x", 1)
-        //     .attr("transform",
-        //         `translate(${count*this.width/n+this.margins.left}, ${0})`
-        //     )
-        //     .attr("width", this.height)
-        //     .attr("height", this.height)
-        //     .style("opacity", 0)
-        //     .on("click", (d) => {
-        //         if (curvechart.animating) {
+        this.svg.select(`.subChart${count}`)
+            .data([count])
+            .append("rect")
+            .attr("class", "chartSelect")
+            .attr("x", 1)
+            .attr("transform",
+                `translate(${count*this.width/n+this.margins.left}, ${0})`
+            )
+            .attr("width", this.height)
+            .attr("height", this.height)
+            .style("opacity", 0)
+            .on("click", (d) => {
+                if (curvechart.animating) {
 
-        //         } else {
-        //             if (this.columns[d] === this.selectedChart1) {
-        //                 this.selectedChart1 = null;
-        //                 d3.select(`.subChart${d}`)
-        //                     .selectAll("rect")
-        //                     .style("fill", "black");
-        //             } else if (this.columns[d] === this.selectedChart2) {
-        //                 this.selectedChart2 = null;
-        //                 d3.select(`.subChart${d}`)
-        //                     .selectAll("rect")
-        //                     .style("fill", "black");
-        //                 // Remove color
-        //             } else if (this.selectedChart1 === null) {
-        //                 this.selectedChart1 = this.columns[d];
-        //                 d3.select(`.subChart${d}`)
-        //                     .selectAll("rect")
-        //                     .style("fill", "gold");
-        //             } else if (this.selectedChart2 === null) {
-        //                 this.selectedChart2 = this.columns[d];
-        //                 d3.select(`.subChart${d}`)
-        //                     .selectAll("rect")
-        //                     .style("fill", "gold");
-        //             }
+                } else {
+                    if (this.columns[d] === this.selectedChart1) {
+                        this.selectedChart1 = null;
+                        d3.select(`.subChart${d}`)
+                            .selectAll("rect")
+                            .style("fill", "black");
+                    } else if (this.columns[d] === this.selectedChart2) {
+                        this.selectedChart2 = null;
+                        d3.select(`.subChart${d}`)
+                            .selectAll("rect")
+                            .style("fill", "black");
+                        // Remove color
+                    } else if (this.selectedChart1 === null) {
+                        this.selectedChart1 = this.columns[d];
+                        d3.select(`.subChart${d}`)
+                            .selectAll("rect")
+                            .style("fill", "gold");
+                    } else if (this.selectedChart2 === null) {
+                        this.selectedChart2 = this.columns[d];
+                        d3.select(`.subChart${d}`)
+                            .selectAll("rect")
+                            .style("fill", "gold");
+                    }
 
-        //             if (this.selectedChart1 !== null && this.selectedChart2 !==
-        //                 null) {
-        //                 scatterplot.updateAxis(this.selectedChart1,
-        //                     this.selectedChart2);
-        //             };
-        //         }
+                    if (this.selectedChart1 !== null && this.selectedChart2 !==
+                        null) {
+                        scatterplot.updateAxis(this.selectedChart1,
+                            this.selectedChart2);
+                    };
+                }
 
-        //     });
+            });
 
         count++;
     })
