@@ -84,7 +84,7 @@ histogram.createCharts = function() {
                 `translate(${(count*this.width)/n + this.margins.left}, ${this.height})`
             )
             .attr("class", `xAxis${count}`)
-            .call(d3.axisBottom(this.x).tickValues([]).tickSizeOuter(
+            .call(d3.axisBottom(this.x).ticks(5).tickSizeOuter(
                 0));
 
         // Append Y axis
@@ -203,7 +203,8 @@ histogram.update = function(duration) {
         this.y.domain([0, d3.max(bins, (d) => { return d.length; })]);
 
         this.svg.select(`.xAxis${count}`)
-            .call(d3.axisBottom(this.x).tickValues([]).tickSizeOuter(
+            .transition().duration(duration)
+            .call(d3.axisBottom(this.x).ticks(5).tickSizeOuter(
                 0));
 
         this.svg.select(`.yAxis${count}`)
@@ -236,7 +237,7 @@ histogram.update = function(duration) {
                     (
                         count * this.width) / n;
                 return `translate(${offset},${histogram.y(d.length)+5})`
-}) .attr("width", function(d) {
+            }).attr("width", function(d) {
                 return histogram.x(d.x1) - histogram.x(d.x0);
             })
             .attr("height", function(d) {
