@@ -11,7 +11,6 @@ histogram.margins = {
     left: 30,
     right: 30
 };
-histogram.color = "blue";
 histogram.x = d3.scaleLinear();
 histogram.y = d3.scaleLinear();
 histogram.histo = d3.histogram();
@@ -118,7 +117,7 @@ histogram.createCharts = function() {
                 return (histogram.height - histogram.y(d.length) -
                     5);
             })
-            .style("fill", this.color);
+            .style("fill", "black");
 
 
         this.svg.select(`.subChart${count}`)
@@ -140,23 +139,23 @@ histogram.createCharts = function() {
                         this.selectedChart1 = null;
                         d3.select(`.subChart${d}`)
                             .selectAll("rect")
-                            .style("fill", "blue");
+                            .style("fill", "black");
                     } else if (this.columns[d] === this.selectedChart2) {
                         this.selectedChart2 = null;
                         d3.select(`.subChart${d}`)
                             .selectAll("rect")
-                            .style("fill", "blue");
+                            .style("fill", "black");
                         // Remove color
                     } else if (this.selectedChart1 === null) {
                         this.selectedChart1 = this.columns[d];
                         d3.select(`.subChart${d}`)
                             .selectAll("rect")
-                            .style("fill", "green");
+                            .style("fill", "gold");
                     } else if (this.selectedChart2 === null) {
                         this.selectedChart2 = this.columns[d];
                         d3.select(`.subChart${d}`)
                             .selectAll("rect")
-                            .style("fill", "green");
+                            .style("fill", "gold");
                     }
 
                     if (this.selectedChart1 !== null && this.selectedChart2 !==
@@ -222,9 +221,9 @@ histogram.update = function(duration) {
                 if (this.columns[count] == this.selectedChart1 ||
                     this.columns[count] == this.selectedChart2
                 ) {
-                    return "green";
+                    return "gold";
                 } else {
-                    return "blue";
+                    return "black";
                 }
             })
             .merge(nodes)
@@ -266,23 +265,23 @@ histogram.update = function(duration) {
                         this.selectedChart1 = null;
                         d3.select(`.subChart${d}`)
                             .selectAll("rect")
-                            .style("fill", "blue");
+                            .style("fill", "black");
                     } else if (this.columns[d] === this.selectedChart2) {
                         this.selectedChart2 = null;
                         d3.select(`.subChart${d}`)
                             .selectAll("rect")
-                            .style("fill", "blue");
+                            .style("fill", "black");
                         // Remove color
                     } else if (this.selectedChart1 === null) {
                         this.selectedChart1 = this.columns[d];
                         d3.select(`.subChart${d}`)
                             .selectAll("rect")
-                            .style("fill", "green");
+                            .style("fill", "gold");
                     } else if (this.selectedChart2 === null) {
                         this.selectedChart2 = this.columns[d];
                         d3.select(`.subChart${d}`)
                             .selectAll("rect")
-                            .style("fill", "green");
+                            .style("fill", "gold");
                     }
 
                     if (this.selectedChart1 !== null && this.selectedChart2 !==
