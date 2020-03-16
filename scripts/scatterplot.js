@@ -357,6 +357,23 @@ function isBrushed(brush_cords, cx,cy){
             .ease(d3.easeLinear)
             .attr("class", "non_brushed")
             .style("fill", main.color)
+            scatterplot.d_nonbrushed = d3.selectAll(".non_brushed").data().map(function(d) {return d.country});
+            //console.log("brushed elements", scatterplot.d_brushed);
+            
+            // filter the single and whole year data by countries 
+            main.singleYearData = data.filter(function(datum){
+                if(scatterplot.d_nonbrushed.includes(datum.country)){
+                    return datum;}
+    
+            main.wholeYearData = wholeData.filter(function(datum){
+                if(scatterplot.d_nonbrushed.includes(datum.country)){
+                    return datum;}
+    
+            
+            })
+    
+        })
+        // update the graphs back to original state
             sunburst.update(duration);
             histogram.update(duration);
             curvechart.update(duration);
