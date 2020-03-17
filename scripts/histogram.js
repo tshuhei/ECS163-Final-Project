@@ -46,6 +46,8 @@ histogram.init = function() {
  * #param {number} n : number of charts to create
  */
 histogram.createCharts = function() {
+    histogram.selectedChart1 = null;
+    histogram.selectedChart2 = null;
     var n = this.columns.length;
     var count = 0;
     this.chart.selectAll("g").remove();
